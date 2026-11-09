@@ -1,26 +1,55 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --bg-deep-navy: #0F172A; /*[cite: 1] */
+  --action-indigo: #6366F1; /*[cite: 1] */
+  --accent-cyan: #06B6D4; /*[cite: 1] */
+  --cards-charcoal: #1E293B; /*[cite: 1] */
+  --base-amber: #F59E0B; /*[cite: 1] */
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--bg-deep-navy);
+  color: #F8FAFC;
+  font-family: system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Smooth Scrolling Container */
+.smooth-scroll-container {
+  scroll-behavior: smooth;
+  overflow-y: auto;
+}
+
+/* Glow-on-hover Card Style */
+.card-glow {
+  background-color: var(--cards-charcoal);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  transition: all 0.3s ease;
+}
+
+.card-glow:hover {
+  box-shadow: 0 0 20px rgba(99, 102, 241, 0.4);
+  border-color: var(--action-indigo);
+}
+
+/* Primary Action Buttons */
+.btn-primary {
+  background-color: var(--action-indigo);
+  color: #FFFFFF;
+  transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+  background-color: #4f46e5;
+}
+
+/* Accents and Highlights */
+.text-accent {
+  color: var(--accent-cyan);
+}
+
+.badge-database {
+  background-color: var(--base-amber);
+  color: #0F172A;
 }
