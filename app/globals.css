@@ -53,3 +53,89 @@ body {
   background-color: var(--base-amber);
   color: #0F172A;
 }
+
+/* =========================================================================
+   DOTTED BACKGROUND PATTERNS & DECORATIVE UTILITIES
+   ========================================================================= */
+
+/* Subtle dotted grid using lightweight CSS radial gradients */
+.bg-dots-pattern {
+  background-image: radial-gradient(rgba(255, 255, 255, 0.075) 1.2px, transparent 1.2px);
+  background-size: 26px 26px;
+}
+
+.bg-dots-cyan {
+  background-image: radial-gradient(rgba(6, 182, 212, 0.12) 1.2px, transparent 1.2px);
+  background-size: 26px 26px;
+}
+
+.bg-dots-indigo {
+  background-image: radial-gradient(rgba(99, 102, 241, 0.12) 1.2px, transparent 1.2px);
+  background-size: 26px 26px;
+}
+
+.bg-dots-amber {
+  background-image: radial-gradient(rgba(245, 158, 11, 0.10) 1.2px, transparent 1.2px);
+  background-size: 26px 26px;
+}
+
+/* Vignette mask that softly dissolves the pattern near screen edges */
+.mask-radial-vignette {
+  mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000000 50%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 50%, #000000 50%, transparent 100%);
+}
+
+/* Smooth decorative floating animations */
+@keyframes floatSlow {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(1.5deg);
+  }
+}
+
+@keyframes floatReverse {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  50% {
+    transform: translateY(8px) rotate(-1.5deg);
+  }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.04);
+  }
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-float-slow {
+  animation: floatSlow 8s ease-in-out infinite;
+}
+
+.animate-float-reverse {
+  animation: floatReverse 10s ease-in-out infinite;
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 6s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spinSlow 50s linear infinite;
+}

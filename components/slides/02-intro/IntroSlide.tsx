@@ -1,36 +1,65 @@
+"use client";
+
+import React, { useState } from "react";
 import { introContent, type IntroContent } from "@/content/intro";
 import { SplitSection } from "@/components/common/SplitSection";
 import { SectionTitle } from "@/components/common/SectionTitle";
 import { BulletList } from "@/components/common/BulletList";
 import { SlideHeader } from "@/components/common/SlideHeader";
+import { SlideBackground } from "@/components/common/decorations/SlideBackground";
+import {
+  IntroLeftDecorations,
+  IntroRightDecorations,
+} from "./IntroSlideDecorations";
 import { GlassCard } from "./GlassCard";
+import { SlideType } from "../flow";
+import { motion } from "framer-motion";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 
-export interface IntroSlideProps {
+export interface IntroSlideProps extends SlideType {
   content?: IntroContent;
   className?: string;
 }
 
 export function IntroSlide({
   content = introContent,
+  onNextSlide,
+  onPreviousSlide,
   className = "",
 }: IntroSlideProps) {
+  const [isPart1Chosen, setIsPart1Chosen] = useState(false);
+
+  const handleChoosePart1 = () => {
+    if (isPart1Chosen) return;
+    setIsPart1Chosen(true);
+    setTimeout(() => {
+      onNextSlide?.();
+    }, 550);
+  };
+
   return (
     <section
       aria-label={content.heading}
-      className={`relative min-h-screen w-full flex flex-col bg-[var(--bg-deep-navy)] overflow-hidden ${className}`}
+      className={`relative min-h-screen w-full flex flex-col bg-[var(--bg-deep-navy)] overflow-hidden select-none ${className}`}
     >
-      {/* Creative ambient background glow orbs */}
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -top-32 -left-32 w-[32rem] h-[32rem] rounded-full bg-[var(--accent-cyan)]/10 blur-[130px] animate-pulse"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute -bottom-32 -right-32 w-[36rem] h-[36rem] rounded-full bg-[var(--action-indigo)]/15 blur-[140px]"
-      />
-      <div
-        aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[40rem] h-[20rem] rounded-full bg-[var(--cards-charcoal)]/30 blur-[100px]"
+      {/* Sleek Dotted Pattern Background with Split Accent Orbs */}
+      <SlideBackground
+        theme="cyan"
+        slideTag="SLIDE_02 // SYLLABUS"
+        glowOrbs={[
+          {
+            color: "cyan",
+            position: "top-left",
+            size: "w-[36rem] h-[36rem]",
+            opacity: "opacity-15",
+          },
+          {
+            color: "indigo",
+            position: "bottom-right",
+            size: "w-[38rem] h-[38rem]",
+            opacity: "opacity-20",
+          },
+        ]}
       />
 
       {/* Slide Heading Header */}
@@ -44,33 +73,111 @@ export function IntroSlide({
       {/* Two-part split layout with Glass Cards */}
       <div className="relative z-10 flex-1 flex">
         <SplitSection
-          leftClassName="bg-transparent"
-          rightClassName="bg-[var(--cards-charcoal)]/20 md:border-l md:border-white/5"
+          leftClassName="bg-transparent relative"
+          rightClassName="bg-[var(--cards-charcoal)]/20 md:border-l md:border-white/5 relative"
           left={
-            <div className="w-full max-w-xl mx-auto py-4">
-              <GlassCard
-                accent="cyan"
-                badgeStep="Part 01"
-                badge="Foundations & Concepts"
+            <div className="relative w-full h-full flex flex-col justify-center">
+              {/* Left Side Foundations Vector Decorations */}
+              <IntroLeftDecorations />
+
+              <motion.div
+                onClick={handleChoosePart1}
+                whileHover={!isPart1Chosen ? { scale: 1.025, y: -4 } : {}}
+                whileTap={!isPart1Chosen ? { scale: 0.99 } : {}}
+                initial={{ opacity: 0, y: 20 }}
+                animate={
+                  isPart1Chosen
+                    ? {
+                        scale: 1.04,
+                        y: -6,
+                        boxShadow: "0 0 50px rgba(6, 182, 212, 0.45)",
+                      }
+                    : { opacity: 1, y: 0 }
+                }
+                transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+                className="w-full max-w-xl mx-auto py-4 cursor-pointer relative z-10"
               >
-                <SectionTitle as="h2">
-                  {content.left.title}
-                </SectionTitle>
-                <BulletList
-                  items={content.left.items}
-                  variant="number"
+              <div
+                className={`relative rounded-2xl transition-all duration-300 ${
+                  isPart1Chosen
+                    ? "ring-2 ring-[var(--accent-cyan)] shadow-[0_0_40px_rgba(6,182,212,0.5)]"
+                    : "ring-1 ring-white/10 hover:ring-[var(--accent-cyan)]/60"
+                }`}
+              >
+                <GlassCard
                   accent="cyan"
-                />
-              </GlassCard>
+                  badgeStep="Part 01"
+                  badge="Foundations & Concepts"
+                  className={
+                    isPart1Chosen
+                      ? "!border-[var(--accent-cyan)] bg-[var(--cards-charcoal)]/85"
+                      : ""
+                  }
+                >
+                  <SectionTitle as="h2">
+                    {content.left.title}
+                  </SectionTitle>
+                  <BulletList
+                    items={content.left.items}
+                    variant="number"
+                    accent="cyan"
+                  />
+
+                  {/* Clean Selection Status / Action Pill */}
+                  <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      {isPart1Chosen ? (
+                        <motion.div
+                          initial={{ scale: 0.8, opacity: 0 }}
+                          animate={{ scale: 1, opacity: 1 }}
+                          className="flex items-center gap-2 text-xs font-mono font-bold text-[var(--accent-cyan)]"
+                        >
+                          <CheckCircle2 className="w-4 h-4 text-[var(--accent-cyan)] animate-bounce" />
+                          <span>Selected · Starting Part 01...</span>
+                        </motion.div>
+                      ) : (
+                        <div className="flex items-center gap-1.5 text-xs font-mono text-slate-300 group-hover:text-[var(--accent-cyan)] transition-colors">
+                          <span>Click to start Part 01</span>
+                          <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-1 transition-transform" />
+                        </div>
+                      )}
+                    </div>
+
+                    <span
+                      className={`px-2.5 py-1 rounded-full text-[10px] font-mono uppercase tracking-wider font-semibold transition-all ${
+                        isPart1Chosen
+                          ? "bg-[var(--accent-cyan)] text-[var(--bg-deep-navy)] shadow-[0_0_15px_rgba(6,182,212,0.8)]"
+                          : "bg-white/5 text-slate-400 group-hover:bg-[var(--accent-cyan)]/15 group-hover:text-[var(--accent-cyan)]"
+                      }`}
+                    >
+                      {isPart1Chosen ? "Active Selection" : "Start Here"}
+                    </span>
+                  </div>
+                </GlassCard>
+              </div>
+            </motion.div>
             </div>
           }
           right={
-            <div className="w-full max-w-xl mx-auto py-4">
-              <GlassCard
-                accent="indigo"
-                badgeStep="Part 02"
-                badge="Roadmap & Lifecycle"
+            <div className="relative w-full h-full flex flex-col justify-center">
+              {/* Right Side Roadmap Vector Decorations */}
+              <IntroRightDecorations />
+
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={
+                  isPart1Chosen
+                    ? { opacity: 0.22, scale: 0.96, filter: "blur(1.5px)" }
+                    : { opacity: 1, scale: 1, filter: "blur(0px)" }
+                }
+                transition={{ duration: 0.35 }}
+                className="w-full max-w-xl mx-auto py-4 relative z-10"
               >
+                <GlassCard
+                  accent="indigo"
+                  badgeStep="Part 02"
+                  badge="Roadmap & Lifecycle"
+                >
                 <SectionTitle as="h2">
                   {content.right.title}
                 </SectionTitle>
@@ -79,9 +186,19 @@ export function IntroSlide({
                   variant="number"
                   accent="indigo"
                 />
+
+                <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between opacity-50">
+                  <span className="text-xs font-mono text-slate-400">
+                    Part 02 will follow
+                  </span>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase text-slate-500 bg-white/5">
+                    Upcoming
+                  </span>
+                </div>
               </GlassCard>
-            </div>
-          }
+            </motion.div>
+          </div>
+        }
         />
       </div>
     </section>

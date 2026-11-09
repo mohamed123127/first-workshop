@@ -10,6 +10,12 @@ export interface WebsiteTypeItem {
   placeholderLabel?: string;
 }
 
+export interface WebOverviewTeaser {
+  question: string;
+  subquestion: string;
+  buttonText: string;
+}
+
 export interface WebOverviewContent {
   eyebrow: string;
   badge: string;
@@ -18,6 +24,7 @@ export interface WebOverviewContent {
   typesSectionHeading: string;
   typesSectionSubtitle: string;
   types: WebsiteTypeItem[];
+  footerTeaser: WebOverviewTeaser;
 }
 
 export const webOverviewContent: WebOverviewContent = {
@@ -91,5 +98,10 @@ export const webOverviewContent: WebOverviewContent = {
       placeholderLabel: "Blog & Media Mockup",
     },
   ],
+  footerTeaser: {
+    question: "But how does the web work?",
+    subquestion:
+      "From your browser URL to DNS, servers, protocols, and database queries across the globe.",
+    buttonText: "Let's explore the web",
+  },
 };
-
