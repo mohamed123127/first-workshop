@@ -10,6 +10,7 @@ import { IntroSlide } from "@/components/slides/02-intro";
 import { WebOverviewSlide } from "@/components/slides/03-web-overview";
 import { WebVsNativeSlide } from "@/components/slides/04-web-vs-native";
 import { HowWebWorksSlide } from "@/components/slides/04-how-web-works";
+import { WebBehindScenesSlide } from "@/components/slides/05-web-behind-scenes";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(1);
@@ -139,6 +140,23 @@ export default function Home() {
               className="w-full"
             >
               <HowWebWorksSlide
+                onPrevSlide={handlePrev}
+                onNextSlide={handleNext}
+              />
+            </motion.div>
+          )}
+
+          {currentSlide === 5 && (
+            <motion.div
+              key="slide-5"
+              variants={currentVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.5, ease: EASINGS.snappy }}
+              className="w-full"
+            >
+              <WebBehindScenesSlide
                 onPrevSlide={handlePrev}
                 onNextSlide={handleNext}
               />

@@ -44,19 +44,19 @@ export const SLIDES_FLOW: Record<number, SlideRouteConfig> = {
   },
   4: {
     id: 4,
-    label: "04: Web vs Native",
+    label: "04: How Web Works",
     nextId: 5,
     prevId: 3,
-    transitionToNext: "fade",
+    transitionToNext: "zoomIn",
     transitionToPrev: "slideRight",
   },
   5: {
     id: 5,
-    label: "05: How Web Works",
+    label: "05: Behind the Scenes",
     nextId: null,
     prevId: 4,
     transitionToNext: "fade",
-    transitionToPrev: "fade",
+    transitionToPrev: "zoomIn",
   },
 };
 
