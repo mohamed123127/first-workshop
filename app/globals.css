@@ -21,6 +21,24 @@ body {
   overflow-y: auto;
 }
 
+.smooth-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.smooth-scroll-container::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 9999px;
+}
+
+.smooth-scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(99, 102, 241, 0.3);
+  border-radius: 9999px;
+}
+
+.smooth-scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(6, 182, 212, 0.6);
+}
+
 /* Glow-on-hover Card Style */
 .card-glow {
   background-color: var(--cards-charcoal);

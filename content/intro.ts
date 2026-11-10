@@ -12,26 +12,27 @@ export interface IntroContent {
 export const introContent: IntroContent = {
   heading: "What you will get from this workshop",
   left: {
-    title: "General idea about web dev",
+    title: "Web Development Fundamentals",
     items: [
-      "What is a website",
+      "What is a website?",
       "Types of websites",
-      "Mobile / Desktop app vs Web app",
-      "What is Frontend",
-      "What is Backend",
-      "What is a Database",
-      "Data flow",
+      "Mobile / Desktop apps vs. Web apps",
+      "What is the Frontend?",
+      "What is the Backend?",
+      "What is a Database?",
+      "Understanding Data Flow",
+      "Static vs. Dynamic websites"
     ],
   },
   right: {
-    title: "From idea to final product",
+    title: "The Development Lifecycle",
     items: [
-      "Getting the idea and brainstorming it",
-      "Requirements document (cahier des charges) and MVP",
-      "Design (UI/UX)",
-      "Architecture",
-      "Coding the frontend and backend",
-      "Deployment",
+      "Idea conception and brainstorming",
+      "Requirements specification (Cahier des Charges) & MVP definition",
+      "UI/UX Design and wireframing",
+      "System architecture and planning",
+      "Full-stack development (Frontend & Backend)",
+      "Testing, deployment, and launch",
     ],
   },
 };

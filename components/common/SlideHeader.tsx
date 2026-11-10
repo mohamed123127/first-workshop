@@ -3,6 +3,7 @@ import type { ReactNode } from "react";
 export interface SlideHeaderProps {
   title: string;
   eyebrow?: string;
+  subtitle?: string;
   slideNumber?: string;
   accent?: "cyan" | "indigo" | "amber";
   rightContent?: ReactNode;
@@ -12,6 +13,7 @@ export interface SlideHeaderProps {
 export function SlideHeader({
   title,
   eyebrow,
+  subtitle,
   slideNumber,
   accent = "cyan",
   rightContent,
@@ -60,6 +62,11 @@ export function SlideHeader({
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold tracking-tight text-white truncate">
             {title}
           </h1>
+          {subtitle && (
+            <p className="text-xs sm:text-sm text-slate-300 font-normal truncate max-w-2xl">
+              {subtitle}
+            </p>
+          )}
         </div>
 
         {/* Right Section: Animated Slide Number Badge or Custom Content */}

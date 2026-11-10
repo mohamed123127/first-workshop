@@ -81,22 +81,26 @@ export const teachersSlideContent: TeachersSlideContent = {
       combinedExperienceAndProjects: {
         title: "Experience & Projects",
         summary:
-          "Focused on modern frontend engineering, interactive web experiences, and building responsive applications using modern JavaScript technologies.",
+          "Full-Stack Developer focused on modern web technologies, scalable application engineering, and building intelligent AI applications.",
         highlights: [
-          "Practical development experience in modern frontend engineering",
-          "Project: Khawa Tech — Multi-tenant POS and inventory management SaaS",
-          "Developing responsive user interfaces and reusable application components",
-          "Collaborative software development using modern web technologies and workflows",
+          "Expertise in Full-Stack development and modern frontend/backend engineering",
+          "Currently working part-time remote job",
+          "Specialized in developing and integrating AI applications and autonomous agents",       
+          "Project: Khawa Tech — Multi-tenant POS and inventory management SaaS and more...",
         ],
         tags: [
+          "Full-Stack Developer",
+          "AI Applications",
           "Next.js",
           "React",
           "TypeScript",
           "JavaScript",
           "Tailwind CSS",
-          "Frontend Engineering",
+          "laravel",
+          "..."
         ],
       },
-    },
+      
+  },
   ],
 };

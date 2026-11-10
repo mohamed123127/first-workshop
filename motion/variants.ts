@@ -5,14 +5,7 @@ import { MotionType } from "./types";
 /**
  * Slide container transition variants mapped by MotionType
  */
-export const slideContainerVariants: Record<
-  MotionType,
-  {
-    enter: (custom?: any) => Record<string, any>;
-    center: Record<string, any>;
-    exit: (custom?: any) => Record<string, any>;
-  }
-> = {
+export const slideContainerVariants: Record<MotionType, Variants> = {
   // Motion 1: Scroll down transition (Slide 1 -> Slide 2)
   scrollDown: {
     enter: () => ({ y: 80, opacity: 0 }),

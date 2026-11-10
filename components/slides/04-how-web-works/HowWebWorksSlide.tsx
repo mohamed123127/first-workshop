@@ -11,7 +11,6 @@ import { SlideBackground } from "@/components/common/decorations/SlideBackground
 import {
   HowWebWorksFloatingDecorations,
   HowWebWorksLeftDiagram,
-  HowWebWorksRightDiagram,
 } from "./HowWebWorksDecorations";
 import {
   Lock,
@@ -295,7 +294,7 @@ export function HowWebWorksSlide({
                       }}
                       className="px-4 py-2 rounded-md bg-[#303134] hover:bg-[#3c4043] text-xs font-medium text-slate-200 border border-transparent hover:border-[#5f6368] transition-colors cursor-pointer"
                     >
-                      I'm Feeling Lucky
+                      I&apos;m Feeling Lucky
                     </button>
                   </div>
                 </form>
@@ -346,7 +345,7 @@ export function HowWebWorksSlide({
                 {/* Results Stats */}
                 <p className="text-[11px] text-slate-400 mb-6">
                   About 1,840,000,000 results (0.38 seconds) for{" "}
-                  <span className="text-white font-semibold">"{activeQuery}"</span>
+                  <span className="text-white font-semibold">&ldquo;{activeQuery}&rdquo;</span>
                 </p>
 
                 {/* Simulated Google Search Results */}
@@ -375,7 +374,7 @@ export function HowWebWorksSlide({
                       What is a Domain Name? | Cloudflare Learning Center
                     </h4>
                     <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                      A domain name is a string of text that maps to an alphanumeric IP address, used to access a website from client software. In plain English, it's the address people type in a browser.
+                      A domain name is a string of text that maps to an alphanumeric IP address, used to access a website from client software. In plain English, it&apos;s the address people type in a browser.
                     </p>
                   </div>
 

@@ -1,3 +1,9 @@
+export interface WebsiteImageItem {
+  src: string;
+  alt?: string;
+  caption?: string;
+}
+
 export interface WebsiteTypeItem {
   id: string;
   title: string;
@@ -7,13 +13,8 @@ export interface WebsiteTypeItem {
   accent?: "cyan" | "indigo" | "amber";
   imageSrc?: string;
   imageAlt?: string;
+  images?: (string | WebsiteImageItem)[];
   placeholderLabel?: string;
-}
-
-export interface WebOverviewTeaser {
-  question: string;
-  subquestion: string;
-  buttonText: string;
 }
 
 export interface WebOverviewContent {
@@ -24,7 +25,6 @@ export interface WebOverviewContent {
   typesSectionHeading: string;
   typesSectionSubtitle: string;
   types: WebsiteTypeItem[];
-  footerTeaser: WebOverviewTeaser;
 }
 
 export const webOverviewContent: WebOverviewContent = {
@@ -32,8 +32,8 @@ export const webOverviewContent: WebOverviewContent = {
   badge: "Slide 03",
   title: "General Idea About the Web",
   description:
-    "The modern web is an interconnected ecosystem of platforms, APIs, and client interfaces. Understanding the fundamental categories of web projects helps define the right architecture, technical stack, and user experience.",
-  typesSectionHeading: "Types of Websites & Web Applications",
+    "A website is a collection of web pages, digital content, and interactive elements hosted on a web server and accessible via the internet using a web browser through a unique domain name.",
+  typesSectionHeading: "Types of Websites ",
   typesSectionSubtitle:
     "From informational showcase sites to data-intensive internal management platforms, each type serves specific business and technical goals.",
   types: [
@@ -44,6 +44,7 @@ export const webOverviewContent: WebOverviewContent = {
       description:
         "Presents a company's identity, services, and contact information. Focuses on high-impact visual design, performance, and search engine optimization (SEO).",
       tags: ["Showcase", "SEO", "Responsive"],
+      imageSrc: "/images/vitrine.jpg",
       accent: "cyan",
       placeholderLabel: "Site Vitrine Mockup",
     },
@@ -55,6 +56,7 @@ export const webOverviewContent: WebOverviewContent = {
         "Interactive software tailored for businesses to manage data, clients (CRM), inventory (ERP), workflows, permissions, and automated reporting.",
       tags: ["Database", "Auth", "Workflows"],
       accent: "indigo",
+      imageSrc: "/images/gestion.jpg",
       placeholderLabel: "Dashboard & ERP Mockup",
     },
     {
@@ -65,6 +67,7 @@ export const webOverviewContent: WebOverviewContent = {
         "Full-featured online retail platforms with dynamic product catalogs, cart management, secure checkout, payment gateways, and inventory sync.",
       tags: ["Stripe / Cart", "Catalog", "Transactions"],
       accent: "amber",
+      imageSrc: "/images/ecommerce.jpg",
       placeholderLabel: "E-Commerce Mockup",
     },
     {
@@ -74,6 +77,7 @@ export const webOverviewContent: WebOverviewContent = {
       description:
         "Subscription-based digital products delivering full desktop-grade software capabilities directly inside modern web browsers (e.g. Canva, Notion).",
       tags: ["Cloud", "Real-time", "Subscription"],
+      imageSrc: "/images/saas.jpg",
       accent: "indigo",
       placeholderLabel: "SaaS Platform Mockup",
     },
@@ -85,23 +89,8 @@ export const webOverviewContent: WebOverviewContent = {
         "Tailored presentation hubs for developers, designers, and creators highlighting case studies, skills, live demos, and contact channels.",
       tags: ["Visuals", "Case Studies", "Interactive"],
       accent: "cyan",
+ imageSrc: "/images/portfolio.jpg",      
       placeholderLabel: "Portfolio Mockup",
     },
-    {
-      id: "blog",
-      title: "Blog & Content Platform",
-      subtitle: "Publishing & Community Media",
-      description:
-        "Content-centric publishing architectures with categories, tagging, search, rich media embedding, and content management systems (CMS).",
-      tags: ["CMS", "Articles", "Engagement"],
-      accent: "amber",
-      placeholderLabel: "Blog & Media Mockup",
-    },
   ],
-  footerTeaser: {
-    question: "But how does the web work?",
-    subquestion:
-      "From your browser URL to DNS, servers, protocols, and database queries across the globe.",
-    buttonText: "Let's explore the web",
-  },
 };

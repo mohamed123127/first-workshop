@@ -1,4 +1,7 @@
-import type { ReactNode } from "react";
+"use client";
+
+import { useState, type ReactNode, type MouseEvent } from "react";
+import type { MediaImage } from "./MediaModal";
 
 export interface MediaCardProps {
   title: string;
@@ -6,11 +9,12 @@ export interface MediaCardProps {
   description: string;
   imageSrc?: string;
   imageAlt?: string;
+  images?: readonly MediaImage[];
   placeholderLabel?: string;
   tags?: readonly string[];
   accent?: "cyan" | "indigo" | "amber";
   className?: string;
-  onMediaClick?: () => void;
+  onMediaClick?: (index?: number) => void;
   footer?: ReactNode;
 }
 
@@ -20,6 +24,7 @@ export function MediaCard({
   description,
   imageSrc,
   imageAlt = title,
+  images = [],
   placeholderLabel = "Image Placeholder",
   tags = [],
   accent = "cyan",
@@ -27,6 +32,36 @@ export function MediaCard({
   onMediaClick,
   footer,
 }: MediaCardProps) {
+  // Normalize images to array of { src, alt, caption }
+  const imageList =
+    images.length > 0
+      ? images.map((img) =>
+          typeof img === "string" ? { src: img, alt: title } : img
+        )
+      : imageSrc
+      ? [{ src: imageSrc, alt: imageAlt }]
+      : [];
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const hasMultiple = imageList.length > 1;
+
+  const currentImage = imageList[currentIndex];
+
+  const handleNext = (e: MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev + 1) % imageList.length);
+  };
+
+  const handlePrev = (e: MouseEvent) => {
+    e.stopPropagation();
+    setCurrentIndex((prev) => (prev - 1 + imageList.length) % imageList.length);
+  };
+
+  const handleDotClick = (e: MouseEvent, index: number) => {
+    e.stopPropagation();
+    setCurrentIndex(index);
+  };
+
   const isCyan = accent === "cyan";
   const isAmber = accent === "amber";
 
@@ -62,13 +97,13 @@ export function MediaCard({
       <div
         role={onMediaClick ? "button" : undefined}
         tabIndex={onMediaClick ? 0 : undefined}
-        onClick={onMediaClick}
+        onClick={() => onMediaClick?.(currentIndex)}
         onKeyDown={
           onMediaClick
             ? (e) => {
                 if (e.key === "Enter" || e.key === " ") {
                   e.preventDefault();
-                  onMediaClick();
+                  onMediaClick(currentIndex);
                 }
               }
             : undefined
@@ -80,9 +115,19 @@ export function MediaCard({
             : ""
         }`}
       >
-        {/* Floating "Click to expand / pop up" badge on hover */}
+        {/* Floating "Multi-image count" pill (top-left) */}
+        {hasMultiple && (
+          <div className="absolute top-2.5 left-2.5 z-20 px-2 py-0.5 rounded-md bg-black/75 backdrop-blur-md border border-white/15 text-[10px] font-mono text-white flex items-center gap-1 shadow-md">
+            <span>📷</span>
+            <span>
+              {currentIndex + 1}/{imageList.length}
+            </span>
+          </div>
+        )}
+
+        {/* Floating "Click to pop up" badge on hover (top-right) */}
         {onMediaClick && (
-          <div className="absolute top-2.5 right-2.5 z-20 opacity-0 group-hover:opacity-100 transition-all duration-200 px-2.5 py-1 rounded-lg bg-black/75 backdrop-blur-md border border-white/15 text-[11px] font-mono text-white flex items-center gap-1.5 shadow-lg group-hover:translate-y-0 translate-y-1">
+          <div className="absolute top-2.5 right-2.5 z-20 opacity-0 group-hover/media:opacity-100 transition-all duration-200 px-2.5 py-1 rounded-lg bg-black/75 backdrop-blur-md border border-white/15 text-[11px] font-mono text-white flex items-center gap-1.5 shadow-lg group-hover/media:translate-y-0 translate-y-1">
             <svg
               className="w-3.5 h-3.5 text-[var(--accent-cyan)]"
               fill="none"
@@ -100,12 +145,13 @@ export function MediaCard({
           </div>
         )}
 
-        {imageSrc ? (
+        {currentImage ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={imageSrc}
-            alt={imageAlt}
-            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+            key={currentImage.src}
+            src={currentImage.src}
+            alt={currentImage.alt ?? title}
+            className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover/media:scale-110"
           />
         ) : (
           /* High-fidelity interactive wireframe / image placeholder */
@@ -157,10 +203,49 @@ export function MediaCard({
           </div>
         )}
 
+        {/* Mini Carousel Navigation Controls (on hover when multiple images) */}
+        {hasMultiple && (
+          <>
+            <button
+              type="button"
+              onClick={handlePrev}
+              aria-label="Previous image"
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-7 h-7 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center border border-white/20 backdrop-blur-sm opacity-0 group-hover/media:opacity-100 transition-all duration-200 hover:scale-110 cursor-pointer shadow-md"
+            >
+              ‹
+            </button>
+            <button
+              type="button"
+              onClick={handleNext}
+              aria-label="Next image"
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-7 h-7 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center border border-white/20 backdrop-blur-sm opacity-0 group-hover/media:opacity-100 transition-all duration-200 hover:scale-110 cursor-pointer shadow-md"
+            >
+              ›
+            </button>
+
+            {/* Bottom dot indicators */}
+            <div className="absolute bottom-2 left-0 right-0 z-20 flex items-center justify-center gap-1.5">
+              {imageList.map((_, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={(e) => handleDotClick(e, idx)}
+                  aria-label={`Jump to image ${idx + 1}`}
+                  className={`w-2 h-2 rounded-full transition-all duration-200 cursor-pointer ${
+                    currentIndex === idx
+                      ? "bg-[var(--accent-cyan)] scale-125 shadow-[0_0_6px_var(--accent-cyan)]"
+                      : "bg-white/40 hover:bg-white/80"
+                  }`}
+                />
+              ))}
+            </div>
+          </>
+        )}
+
         {/* Ambient shine overlay */}
         <div
           aria-hidden="true"
-          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-white/[0.05] opacity-80 group-hover:opacity-100 transition-opacity duration-300"
+          className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-white/[0.05] opacity-80 group-hover/media:opacity-100 transition-opacity duration-300"
         />
       </div>
 

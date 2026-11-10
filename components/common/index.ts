@@ -18,3 +18,6 @@ export type { MediaModalProps } from "./MediaModal";
 
 export { SlideHeader } from "./SlideHeader";
 export type { SlideHeaderProps } from "./SlideHeader";
+
+export { SwipeSlider } from "./SwipeSlider";
+export type { SwipeSliderProps } from "./SwipeSlider";

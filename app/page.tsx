@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { MotionType, slideContainerVariants, EASINGS } from "@/motion";
@@ -8,26 +8,27 @@ import { getAllSlidesFlow, getNextSlideFlow, getPrevSlideFlow } from "@/componen
 import { TeachersSlide } from "@/components/slides/01-teachers";
 import { IntroSlide } from "@/components/slides/02-intro";
 import { WebOverviewSlide } from "@/components/slides/03-web-overview";
+import { WebVsNativeSlide } from "@/components/slides/04-web-vs-native";
 import { HowWebWorksSlide } from "@/components/slides/04-how-web-works";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(1);
   const [activeMotion, setActiveMotion] = useState<MotionType>("fade");
 
-  const goToSlide = (targetId: number, motion: MotionType) => {
+  const goToSlide = useCallback((targetId: number, motion: MotionType) => {
     setActiveMotion(motion);
     setCurrentSlide(targetId);
-  };
+  }, []);
 
-  const handleNext = () => {
+  const handleNext = useCallback(() => {
     const { nextId, motion } = getNextSlideFlow(currentSlide);
     goToSlide(nextId, motion);
-  };
+  }, [currentSlide, goToSlide]);
 
-  const handlePrev = () => {
+  const handlePrev = useCallback(() => {
     const { prevId, motion } = getPrevSlideFlow(currentSlide);
     goToSlide(prevId, motion);
-  };
+  }, [currentSlide, goToSlide]);
 
   // Keyboard navigation (Left / Right arrow keys)
   useEffect(() => {
@@ -37,7 +38,7 @@ export default function Home() {
     };
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [currentSlide]);
+  }, [handleNext, handlePrev]);
 
   // ─── Scroll wheel navigation: scroll down on slide 1 → go to slide 2 ───────
   const scrollCooldown = useRef(false);
@@ -61,7 +62,7 @@ export default function Home() {
 
     window.addEventListener("wheel", handleWheel, { passive: true });
     return () => window.removeEventListener("wheel", handleWheel);
-  }, [currentSlide]);
+  }, [currentSlide, handleNext]);
 
   const slideList = getAllSlidesFlow();
   const currentVariants = slideContainerVariants[activeMotion] ?? slideContainerVariants.fade;
@@ -120,6 +121,20 @@ export default function Home() {
               initial="enter"
               animate="center"
               exit="exit"
+              transition={{ duration: 0.45, ease: EASINGS.snappy }}
+              className="w-full"
+            >
+              <WebVsNativeSlide onExploreNext={handleNext} />
+            </motion.div>
+          )}
+
+          {currentSlide === 5 && (
+            <motion.div
+              key="slide-5"
+              variants={currentVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
               transition={{ duration: 0.5, ease: EASINGS.snappy }}
               className="w-full"
             >
@@ -157,10 +172,11 @@ export default function Home() {
                       route.id > currentSlide ? route.transitionToNext : route.transitionToPrev
                     )
                   }
-                  className={`relative px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${isActive
-                    ? "text-white"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-[#334155]/60"
-                    }`}
+                  className={`relative px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
+                    isActive
+                      ? "text-white"
+                      : "text-slate-400 hover:text-slate-200 hover:bg-[#334155]/60"
+                  }`}
                 >
                   {isActive && (
                     <motion.div
