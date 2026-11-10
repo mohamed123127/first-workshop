@@ -45,10 +45,18 @@ export const SLIDES_FLOW: Record<number, SlideRouteConfig> = {
   4: {
     id: 4,
     label: "04: How Web Works",
-    nextId: null,
+    nextId: 5,
     prevId: 3,
-    transitionToNext: "fade",
+    transitionToNext: "zoomIn",
     transitionToPrev: "slideRight",
+  },
+  5: {
+    id: 5,
+    label: "05: Behind the Scenes",
+    nextId: null,
+    prevId: 4,
+    transitionToNext: "fade",
+    transitionToPrev: "zoomIn",
   },
 };
 
@@ -82,7 +90,7 @@ export function getPrevSlideFlow(currentId: number): {
   motion: MotionType;
 } {
   const current = getSlideConfig(currentId);
-  const prevId = current.prevId ?? 4;
+  const prevId = current.prevId ?? 5;
   return {
     prevId,
     motion: current.transitionToPrev,
