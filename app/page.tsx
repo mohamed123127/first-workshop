@@ -10,7 +10,11 @@ import { IntroSlide } from "@/components/slides/02-intro";
 import { WebOverviewSlide } from "@/components/slides/03-web-overview";
 import { WebVsNativeSlide } from "@/components/slides/04-web-vs-native";
 import { HowWebWorksSlide } from "@/components/slides/04-how-web-works";
+import { Slide06Placeholder } from "@/components/slides/06-in-progress";
 import { WebBehindScenesSlide } from "@/components/slides/05-web-behind-scenes";
+import { ProjectLifecycleSlide } from "@/components/slides/07-project-lifecycle";
+import { TeamworkGitSlide } from "@/components/slides/09-teamwork-git";
+import { GrandSummarySlide } from "@/components/slides/10-summary";
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(1);
@@ -146,9 +150,26 @@ export default function Home() {
             </motion.div>
           )}
 
-          {currentSlide === 5 && (
+          {currentSlide === 6 && (
             <motion.div
-              key="slide-5"
+              key="slide-6"
+              variants={currentVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.5, ease: EASINGS.snappy }}
+              className="w-full"
+            >
+              <Slide06Placeholder
+                onPrevSlide={handlePrev}
+                onNextSlide={handleNext}
+              />
+            </motion.div>
+          )}
+
+          {currentSlide === 7 && (
+            <motion.div
+              key="slide-7"
               variants={currentVariants}
               initial="enter"
               animate="center"
@@ -157,6 +178,57 @@ export default function Home() {
               className="w-full"
             >
               <WebBehindScenesSlide
+                onPrevSlide={handlePrev}
+                onNextSlide={handleNext}
+              />
+            </motion.div>
+          )}
+
+          {currentSlide === 8 && (
+            <motion.div
+              key="slide-8"
+              variants={currentVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.5, ease: EASINGS.snappy }}
+              className="w-full"
+            >
+              <ProjectLifecycleSlide
+                onPrevSlide={handlePrev}
+                onNextSlide={handleNext}
+              />
+            </motion.div>
+          )}
+
+          {currentSlide === 9 && (
+            <motion.div
+              key="slide-9"
+              variants={currentVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.5, ease: EASINGS.snappy }}
+              className="w-full"
+            >
+              <TeamworkGitSlide
+                onPrevSlide={handlePrev}
+                onNextSlide={handleNext}
+              />
+            </motion.div>
+          )}
+
+          {currentSlide === 10 && (
+            <motion.div
+              key="slide-10"
+              variants={currentVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={{ duration: 0.5, ease: EASINGS.snappy }}
+              className="w-full"
+            >
+              <GrandSummarySlide
                 onPrevSlide={handlePrev}
                 onNextSlide={handleNext}
               />
@@ -203,7 +275,7 @@ export default function Home() {
                       transition={{ type: "spring", stiffness: 350, damping: 30 }}
                     />
                   )}
-                  <span>Slide 0{route.id}</span>
+                  <span>Slide {String(route.id).padStart(2, "0")}</span>
                 </button>
               );
             })}

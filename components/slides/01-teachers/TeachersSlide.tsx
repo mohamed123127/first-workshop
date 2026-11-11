@@ -9,9 +9,10 @@ import {
 import { SlideHeader } from "@/components/common/SlideHeader";
 import { SlideBackground } from "@/components/common/decorations/SlideBackground";
 import {
-  TeachersCenterConnector,
-  TeachersTerminalWidget,
-  TeachersCloudWidget,
+  WebBrowserBar,
+  WebLightingConduit,
+  WebTechBadgesRow,
+  FloatingWebDecorations,
 } from "./TeachersSlideDecorations";
 import { TeacherSpotlightModal } from "./TeacherSpotlightModal";
 import {
@@ -21,8 +22,8 @@ import {
   CheckCircle2,
   ExternalLink,
   Maximize2,
-  ZoomIn,
-  ZoomOut,
+  Code2,
+  Zap,
 } from "lucide-react";
 
 export interface TeachersSlideProps {
@@ -57,7 +58,7 @@ export function TeachersSlide({
       aria-label={content.title}
       className={`relative h-screen max-h-screen w-full flex flex-col bg-[var(--bg-deep-navy)] overflow-hidden select-none ${className}`}
     >
-      {/* Sleek Dotted Pattern Background with Ambient Orbs and Technical Crosshairs */}
+      {/* Ambient Dotted Matrix Background with Cyan & Indigo Glows */}
       <SlideBackground
         theme="default"
         slideTag="SLIDE_01 // INSTRUCTORS"
@@ -78,10 +79,13 @@ export function TeachersSlide({
             color: "amber",
             position: "center",
             size: "w-[30rem] h-[20rem]",
-            opacity: "opacity-5",
+            opacity: "opacity-10",
           },
         ]}
       />
+
+      {/* Floating Ambient Web Code Emblems */}
+      <FloatingWebDecorations />
 
       {/* Top Slide Header with Subtitle and Quick Spotlight Prompt */}
       <SlideHeader
@@ -93,49 +97,51 @@ export function TeachersSlide({
         rightContent={
           <div className="hidden lg:flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] font-mono text-slate-300">
             <Sparkles className="w-3.5 h-3.5 text-[var(--accent-cyan)] animate-pulse" />
-            <span>Click any card to spotlight &amp; enlarge</span>
+            <span>Click any mentor to open interactive spotlight</span>
           </div>
         }
       />
 
-      {/* Main Slide Content Area: Fits viewport height seamlessly without vertical scrollbar */}
-      <div className="relative z-10 flex-1 min-h-0 w-full max-w-[94vw] mx-auto px-4 sm:px-6 md:px-10 py-2 sm:py-3 flex flex-col justify-center overflow-hidden">
-        {/* 3x3 Grid Layout: Col 1 & 3 equal, Col 2 narrower; 3 equal-height rows */}
-        <div className="flex-1 min-h-0 w-full grid grid-cols-1 md:grid-cols-[1fr_0.42fr_1fr] md:grid-rows-3 md:[grid-template-rows:repeat(3,minmax(0,1fr))] gap-2.5 lg:gap-3.5 items-stretch overflow-hidden pb-1">
-          {/* CARD 1: Column 1, Spans Row 1 and Row 2 (Top Left) */}
-          {teacher1 && (
-            <div className="md:col-start-1 md:col-end-2 md:row-start-1 md:row-end-3 flex flex-col justify-start w-full h-full min-h-0 overflow-hidden">
-              <TeacherCard
-                teacher={teacher1}
-                onOpenSpotlight={() => setSpotlightTeacher(teacher1)}
-              />
+      {/* Main Slide Content Area: Responsive, Clean, Perfectly Proportioned */}
+      <div className="relative z-10 flex-1 min-h-0 w-full max-w-6xl mx-auto px-4 sm:px-6 md:px-8 py-2 sm:py-3 flex flex-col justify-between gap-2.5 sm:gap-3.5 overflow-y-auto lg:overflow-hidden">
+        {/* ── 1. ACTIVE WEB BROWSER DEVTOOLS BAR ── */}
+        <div className="shrink-0 w-full">
+          <WebBrowserBar />
+        </div>
+
+        {/* ── 2. CENTER STAGE: RESPONSIVE BALANCED TEACHER CARDS FLANKING WEB LIGHTING CONDUIT ── */}
+        <div className="flex-1 min-h-0 w-full flex items-center justify-center py-1">
+          <div className="w-full grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] items-center justify-items-center gap-4 lg:gap-6">
+            {/* INSTRUCTOR 1: LOUAHCHI MOHAMED */}
+            {teacher1 && (
+              <div className="w-full flex justify-center">
+                <TeacherCard
+                  teacher={teacher1}
+                  onOpenSpotlight={() => setSpotlightTeacher(teacher1)}
+                />
+              </div>
+            )}
+
+            {/* CONNECTIVE WEB CONDUIT & PHOTON STREAM */}
+            <div className="hidden md:flex items-center justify-center h-full px-1">
+              <WebLightingConduit />
             </div>
-          )}
 
-          {/* DECORATIVE WIDGET: Column 1, Row 3 (Directly under Mohamed's Card) */}
-          <div className="md:col-start-1 md:col-end-2 md:row-start-3 md:row-end-4 flex flex-col justify-center w-full h-full min-h-0 overflow-hidden">
-            <TeachersTerminalWidget />
+            {/* INSTRUCTOR 2: BENALI NAZIM */}
+            {teacher2 && (
+              <div className="w-full flex justify-center">
+                <TeacherCard
+                  teacher={teacher2}
+                  onOpenSpotlight={() => setSpotlightTeacher(teacher2)}
+                />
+              </div>
+            )}
           </div>
+        </div>
 
-          {/* DECORATIVE CENTER CONNECTOR: Column 2, Spans Row 1 to Row 4 */}
-          <div className="md:col-start-2 md:col-end-3 md:row-start-1 md:row-end-4 flex flex-col justify-center w-full h-full min-h-0 overflow-hidden">
-            <TeachersCenterConnector />
-          </div>
-
-          {/* DECORATIVE WIDGET: Column 3, Row 1 (Directly above Nazim's Card) */}
-          <div className="md:col-start-3 md:col-end-4 md:row-start-1 md:row-end-2 flex flex-col justify-center w-full h-full min-h-0 overflow-hidden">
-            <TeachersCloudWidget />
-          </div>
-
-          {/* CARD 2: Column 3, Spans Row 2 and Row 3 (Bottom Right) */}
-          {teacher2 && (
-            <div className="md:col-start-3 md:col-end-4 md:row-start-2 md:row-end-4 flex flex-col justify-end w-full h-full min-h-0 overflow-hidden">
-              <TeacherCard
-                teacher={teacher2}
-                onOpenSpotlight={() => setSpotlightTeacher(teacher2)}
-              />
-            </div>
-          )}
+        {/* ── 3. BOTTOM WEB TECH BADGES LIGHTING ROW ── */}
+        <div className="shrink-0 w-full pt-1">
+          <WebTechBadgesRow />
         </div>
       </div>
 
@@ -152,6 +158,10 @@ export function TeachersSlide({
   );
 }
 
+/**
+ * Responsive, High-Tech Teacher Card
+ * Well-proportioned, illuminated with modern web styling, not overly big
+ */
 function TeacherCard({
   teacher,
   onOpenSpotlight,
@@ -159,7 +169,6 @@ function TeacherCard({
   teacher: TeacherProfile;
   onOpenSpotlight: () => void;
 }) {
-  const [isTextZoomed, setIsTextZoomed] = useState(false);
   const isCyan = teacher.accent === "cyan";
 
   const accentColorClass = isCyan
@@ -167,8 +176,8 @@ function TeacherCard({
     : "text-[var(--action-indigo)] border-[var(--action-indigo)]/30 bg-[var(--action-indigo)]/10";
 
   const glowHoverClass = isCyan
-    ? "hover:border-[var(--accent-cyan)]/40 hover:shadow-[0_16px_40px_-8px_rgba(6,182,212,0.22)]"
-    : "hover:border-[var(--action-indigo)]/40 hover:shadow-[0_16px_40px_-8px_rgba(99,102,241,0.26)]";
+    ? "hover:border-[var(--accent-cyan)]/50 hover:shadow-[0_16px_40px_-8px_rgba(6,182,212,0.3)]"
+    : "hover:border-[var(--action-indigo)]/50 hover:shadow-[0_16px_40px_-8px_rgba(99,102,241,0.35)]";
 
   const topGlowLine = isCyan
     ? "via-[var(--accent-cyan)]"
@@ -178,185 +187,129 @@ function TeacherCard({
 
   return (
     <article
-      className={`relative w-full h-full max-h-full rounded-2xl p-3.5 sm:p-4 md:p-5 backdrop-blur-xl bg-[var(--cards-charcoal)]/60 border border-white/10 shadow-[0_12px_36px_0_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-0.5 ${glowHoverClass} group flex flex-col justify-between overflow-hidden`}
+      onClick={onOpenSpotlight}
+      className={`relative w-full max-w-[460px] rounded-2xl p-3.5 sm:p-4 md:p-4.5 backdrop-blur-xl bg-[#091124]/80 border border-white/10 shadow-[0_12px_36px_0_rgba(0,0,0,0.4)] transition-all duration-300 hover:-translate-y-1 ${glowHoverClass} group flex flex-col justify-between gap-3 cursor-pointer overflow-hidden`}
     >
-      {/* Top subtle glow accent line */}
+      {/* Top subtle neon glow accent line */}
       <div
         aria-hidden="true"
-        className={`absolute top-0 left-6 right-6 h-[2px] bg-gradient-to-r from-transparent ${topGlowLine} to-transparent opacity-60 group-hover:opacity-100 transition-opacity duration-300`}
+        className={`absolute top-0 left-6 right-6 h-[2px] bg-gradient-to-r from-transparent ${topGlowLine} to-transparent opacity-70 group-hover:opacity-100 transition-opacity duration-300`}
       />
 
-      {/* TOP CONTENT WRAPPER */}
-      <div className="flex flex-col min-h-0 overflow-hidden">
-        {/* HEADER: CIRCLE IMAGE ON LEFT + NAME & EDUCATION BESIDE IT */}
-        <div className="flex items-center gap-3 sm:gap-3.5 mb-2.5 sm:mb-3 shrink-0">
-          {/* CIRCULAR AVATAR WITH GLOW RING */}
+      {/* HEADER: AVATAR WITH NEON WEB ORBIT + NAME & STUDY LEVEL */}
+      <div className="flex items-center gap-3 sm:gap-3.5 shrink-0">
+        {/* Circular Avatar with Glowing Ring */}
+        <div className="relative shrink-0 group/avatar">
           <div
-            onClick={onOpenSpotlight}
-            className="relative shrink-0 cursor-pointer group/avatar"
-            title="Click to spotlight mentor"
+            className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full overflow-hidden border-2 ${
+              isCyan
+                ? "border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.45)]"
+                : "border-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.45)]"
+            } bg-black/50`}
           >
-            <div
-              className={`w-14 h-14 sm:w-16 sm:h-16 md:w-20 md:h-20 rounded-full overflow-hidden border-2 ${
-                isCyan
-                  ? "border-[var(--accent-cyan)] shadow-[0_0_15px_rgba(6,182,212,0.4)]"
-                  : "border-[var(--action-indigo)] shadow-[0_0_15px_rgba(99,102,241,0.4)]"
-              } bg-black/40`}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={teacher.imageSrc}
-                alt={teacher.imageAlt}
-                className="w-full h-full object-cover object-top group-hover/avatar:scale-110 transition-transform duration-500"
-              />
-            </div>
-            {/* Online / Active status dot */}
-            <span
-              className={`absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-[var(--cards-charcoal)] ${
-                isCyan ? "bg-[var(--accent-cyan)] shadow-[0_0_8px_var(--accent-cyan)]" : "bg-[var(--action-indigo)] shadow-[0_0_8px_var(--action-indigo)]"
-              }`}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={teacher.imageSrc}
+              alt={teacher.imageAlt}
+              className="w-full h-full object-cover object-top group-hover/avatar:scale-110 transition-transform duration-500"
             />
           </div>
 
-          {/* BESIDE AVATAR: FULL NAME & EDUCATION */}
-          <div className="flex flex-col min-w-0 justify-center flex-1">
-            <div className="flex items-center justify-between gap-1">
-              <h3
-                onClick={onOpenSpotlight}
-                className="text-base sm:text-lg md:text-xl font-bold tracking-tight text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-[var(--accent-cyan)] transition-all truncate cursor-pointer"
-                title="Click to view full bio"
-              >
-                {teacher.fullName}
-              </h3>
-
-              {/* Spotlight quick button */}
-              <button
-                onClick={onOpenSpotlight}
-                className="shrink-0 p-1.5 rounded-lg bg-white/5 hover:bg-white/15 text-slate-400 hover:text-white border border-white/5 transition-all text-[10px] font-mono flex items-center gap-1 cursor-pointer"
-                title="Open Spotlight modal"
-                aria-label={`Spotlight ${teacher.fullName}`}
-              >
-                <Maximize2 className="w-3 h-3" />
-                <span className="hidden sm:inline">Spotlight</span>
-              </button>
-            </div>
-
-            {/* Current Study Level: Master 2 Informatique */}
-            <div className="flex items-center gap-1.5 mt-1">
-              <span
-                className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] sm:text-[11px] font-semibold tracking-wide border ${accentColorClass}`}
-              >
-                <GraduationCap className="w-3.5 h-3.5 shrink-0" />
-                <span className="truncate">{teacher.studyLevel}</span>
-              </span>
-            </div>
-
-            {/* Role */}
-            <span className="text-[11px] sm:text-xs text-slate-300 font-medium mt-1 truncate">
-              {teacher.role}
-            </span>
-          </div>
+          {/* Glowing Active Status Pulse */}
+          <span
+            className={`absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full border-2 border-[#091124] ${
+              isCyan
+                ? "bg-cyan-400 shadow-[0_0_8px_#22d3ee]"
+                : "bg-indigo-400 shadow-[0_0_8px_#818cf8]"
+            }`}
+          />
         </div>
 
-        {/* ONE UNIFIED BLOCK FOR EXPERIENCE & PROJECTS WITH ENLARGED DESCRIPTION & IN-CARD ZOOM */}
-        <div className="rounded-xl p-2.5 sm:p-3 bg-black/30 border border-white/10 flex flex-col gap-2 overflow-hidden shadow-inner">
-          {/* Block Header with In-Card Text Zoom Toggle and Modal Trigger */}
-          <div className="flex items-center justify-between gap-2 border-b border-white/5 pb-1.5">
-            <div
-              onClick={onOpenSpotlight}
-              className="flex items-center gap-1.5 cursor-pointer group/title"
-              title="Click to spotlight"
-            >
-              <Briefcase className={`w-3.5 h-3.5 ${iconColor} shrink-0`} />
-              <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-200 group-hover/title:text-white transition-colors">
-                {teacher.combinedExperienceAndProjects.title}
-              </h4>
-            </div>
+        {/* Name, Role & Degree */}
+        <div className="flex flex-col min-w-0 justify-center flex-1">
+          <div className="flex items-center justify-between gap-1">
+            <h3 className="text-base sm:text-lg font-extrabold tracking-tight text-white group-hover:text-cyan-300 transition-colors truncate">
+              {teacher.fullName}
+            </h3>
 
-            {/* In-Card Font Zoom / Modal Controls */}
-            <div className="flex items-center gap-1.5">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsTextZoomed((prev) => !prev);
-                }}
-                className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-semibold border transition-all flex items-center gap-1 cursor-pointer ${
-                  isTextZoomed
-                    ? isCyan
-                      ? "bg-[var(--accent-cyan)]/25 text-[var(--accent-cyan)] border-[var(--accent-cyan)]/50"
-                      : "bg-[var(--action-indigo)]/25 text-[var(--action-indigo)] border-[var(--action-indigo)]/50"
-                    : "bg-white/5 text-slate-400 hover:text-white border-white/10"
-                }`}
-                title={isTextZoomed ? "Reset text size" : "Enlarge text in card"}
-              >
-                {isTextZoomed ? (
-                  <>
-                    <ZoomOut className="w-2.5 h-2.5" />
-                    <span>A-</span>
-                  </>
-                ) : (
-                  <>
-                    <ZoomIn className="w-2.5 h-2.5" />
-                    <span>A+</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* PROMINENT DESCRIPTION TEXT (Clickable to enlarge/spotlight) */}
-          <div
-            onClick={onOpenSpotlight}
-            className="group/desc p-2 rounded-lg bg-white/[0.02] hover:bg-white/[0.05] border border-white/5 hover:border-[var(--accent-cyan)]/30 transition-all cursor-pointer relative"
-            title="Click to view full spotlight"
-          >
-            <p
-              className={`text-slate-100 transition-all duration-200 ${
-                isTextZoomed
-                  ? "text-xs sm:text-sm md:text-[15px] font-medium leading-relaxed"
-                  : "text-xs sm:text-[13px] font-normal leading-relaxed line-clamp-3 sm:line-clamp-2"
-              }`}
-            >
-              {teacher.combinedExperienceAndProjects.summary}
-            </p>
-
-            <span className="opacity-0 group-hover/desc:opacity-100 transition-opacity absolute right-1.5 bottom-1 text-[9px] font-mono text-[var(--accent-cyan)]">
-              Click to enlarge ↗
+            {/* Quick Spotlight Button */}
+            <span className="shrink-0 p-1 px-1.5 rounded-md bg-white/5 hover:bg-white/15 text-slate-400 group-hover:text-white border border-white/5 transition-all text-[10px] font-mono flex items-center gap-1">
+              <Maximize2 className="w-2.5 h-2.5 text-cyan-400" />
+              <span className="hidden sm:inline">Bio</span>
             </span>
           </div>
 
-          {/* Highlights */}
-          <ul className="space-y-1 overflow-hidden">
-            {teacher.combinedExperienceAndProjects.highlights.slice(0, isTextZoomed ? 2 : 3).map((highlight, idx) => (
-              <li
-                key={idx}
-                className="flex items-start gap-1.5 text-[10px] sm:text-[11px] text-slate-300 leading-snug line-clamp-1"
-              >
-                <CheckCircle2
-                  className={`w-3 h-3 shrink-0 mt-0.5 ${iconColor}`}
-                />
-                <span className="truncate">{highlight}</span>
-              </li>
-            ))}
-          </ul>
-
-          {/* Tech tags */}
-          <div className="flex flex-wrap gap-1 pt-1.5 border-t border-white/5">
-            {teacher.combinedExperienceAndProjects.tags.slice(0, 5).map((tag, tIdx) => (
-              <span
-                key={tIdx}
-                className="px-1.5 py-0.5 rounded text-[9px] font-mono text-slate-300 bg-white/5 border border-white/5"
-              >
-                {tag}
-              </span>
-            ))}
+          {/* Study Level Pill */}
+          <div className="flex items-center gap-1.5 mt-0.5">
+            <span
+              className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold tracking-wide border ${accentColorClass}`}
+            >
+              <GraduationCap className="w-3 h-3 shrink-0" />
+              <span className="truncate">{teacher.studyLevel}</span>
+            </span>
           </div>
+
+          {/* Role */}
+          <span className="text-[11px] sm:text-xs text-slate-300 font-medium mt-0.5 flex items-center gap-1 truncate">
+            <Code2 className="w-3 h-3 text-cyan-400 shrink-0" />
+            <span className="truncate">{teacher.role}</span>
+          </span>
         </div>
       </div>
 
-      {/* CARD FOOTER: LEFT = LINKEDIN & GITHUB, RIGHT = PORTFOLIO BUTTON */}
-      <div className="mt-2 pt-2 border-t border-white/5 flex items-center justify-between gap-2 shrink-0">
-        {/* Left Bottom: GitHub & LinkedIn Icon Buttons */}
+      {/* CARD BODY: EXPERIENCE & BIO SUMMARY */}
+      <div className="rounded-xl p-2.5 sm:p-3 bg-black/40 border border-white/10 flex flex-col gap-2 shadow-inner">
+        {/* Title */}
+        <div className="flex items-center justify-between border-b border-white/5 pb-1">
+          <div className="flex items-center gap-1.5">
+            <Briefcase className={`w-3.5 h-3.5 ${iconColor} shrink-0`} />
+            <h4 className="text-[11px] sm:text-xs font-bold uppercase tracking-wider text-slate-200">
+              {teacher.combinedExperienceAndProjects.title}
+            </h4>
+          </div>
+          <span className="text-[9px] font-mono text-cyan-400 flex items-center gap-0.5">
+            <Zap className="w-2.5 h-2.5" />
+            <span>Verified</span>
+          </span>
+        </div>
+
+        {/* Summary Description */}
+        <p className="text-xs sm:text-[13px] font-normal leading-relaxed text-slate-100 line-clamp-2">
+          {teacher.combinedExperienceAndProjects.summary}
+        </p>
+
+        {/* 2 Key Highlights */}
+        <ul className="space-y-1">
+          {teacher.combinedExperienceAndProjects.highlights.slice(0, 2).map((highlight, idx) => (
+            <li
+              key={idx}
+              className="flex items-start gap-1.5 text-[10px] sm:text-[11px] text-slate-300 leading-snug line-clamp-1"
+            >
+              <CheckCircle2 className={`w-3 h-3 shrink-0 mt-0.5 ${iconColor}`} />
+              <span className="truncate">{highlight}</span>
+            </li>
+          ))}
+        </ul>
+
+        {/* Web Stack Tags */}
+        <div className="flex flex-wrap gap-1 pt-1.5 border-t border-white/5">
+          {teacher.combinedExperienceAndProjects.tags.slice(0, 5).map((tag, tIdx) => (
+            <span
+              key={tIdx}
+              className="px-1.5 py-0.5 rounded text-[9px] font-mono text-slate-300 bg-white/5 border border-white/5 group-hover:border-cyan-400/20 transition-colors"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* FOOTER: SOCIAL PROFILES & PORTFOLIO TRIGGER */}
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="pt-1 border-t border-white/5 flex items-center justify-between gap-2 shrink-0"
+      >
+        {/* Left: GitHub & LinkedIn */}
         <div className="flex items-center gap-1.5">
           {teacher.githubUrl && (
             <a
@@ -387,22 +340,33 @@ function TeacherCard({
           )}
         </div>
 
-        {/* Right Bottom: Portfolio Button */}
-        {teacher.portfolioUrl && (
-          <a
-            href={teacher.portfolioUrl}
-            target="_blank"
-            rel="noreferrer"
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold shadow-md transition-all hover:opacity-95 hover:scale-[1.02] cursor-pointer ${
-              isCyan
-                ? "bg-[var(--accent-cyan)] text-[#0F172A] shadow-[0_0_15px_rgba(6,182,212,0.3)]"
-                : "bg-[var(--action-indigo)] text-white shadow-[0_0_15px_rgba(99,102,241,0.3)]"
-            }`}
+        {/* Right: Portfolio Link or Spotlight Modal Trigger */}
+        <div className="flex items-center gap-1.5">
+          <button
+            type="button"
+            onClick={onOpenSpotlight}
+            className="px-2.5 py-1 rounded-lg text-xs font-mono font-semibold bg-white/5 hover:bg-white/15 text-slate-300 hover:text-white border border-white/10 transition-all cursor-pointer flex items-center gap-1"
           >
-            <span>Portfolio</span>
-            <ExternalLink className="w-3 h-3 stroke-[2.5]" />
-          </a>
-        )}
+            <Maximize2 className="w-3 h-3 text-cyan-400" />
+            <span>Spotlight</span>
+          </button>
+
+          {teacher.portfolioUrl && (
+            <a
+              href={teacher.portfolioUrl}
+              target="_blank"
+              rel="noreferrer"
+              className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold shadow-md transition-all hover:opacity-95 hover:scale-[1.02] cursor-pointer ${
+                isCyan
+                  ? "bg-cyan-500 text-[#0F172A] shadow-[0_0_12px_rgba(6,182,212,0.35)]"
+                  : "bg-indigo-500 text-white shadow-[0_0_12px_rgba(99,102,241,0.35)]"
+              }`}
+            >
+              <span>Portfolio</span>
+              <ExternalLink className="w-3 h-3 stroke-[2.5]" />
+            </a>
+          )}
+        </div>
       </div>
     </article>
   );

@@ -50,7 +50,7 @@ export const webOverviewContent: WebOverviewContent = {
     },
     {
       id: "gestion",
-      title: "Application de Gestion (Dashboard / ERP)",
+      title: " Systemes (Application de Gestion / ERP)",
       subtitle: "Internal Tools & Business Operations",
       description:
         "Interactive software tailored for businesses to manage data, clients (CRM), inventory (ERP), workflows, permissions, and automated reporting.",
@@ -67,7 +67,7 @@ export const webOverviewContent: WebOverviewContent = {
         "Full-featured online retail platforms with dynamic product catalogs, cart management, secure checkout, payment gateways, and inventory sync.",
       tags: ["Stripe / Cart", "Catalog", "Transactions"],
       accent: "amber",
-      imageSrc: "/images/ecommerce.jpg",
+      imageSrc: "/images/ecommerce.png",
       placeholderLabel: "E-Commerce Mockup",
     },
     {

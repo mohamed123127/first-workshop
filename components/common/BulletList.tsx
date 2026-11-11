@@ -12,6 +12,7 @@ export interface BulletListProps {
   items: readonly BulletItem[];
   variant?: "icon" | "number" | "bullet";
   accent?: "cyan" | "indigo";
+  density?: "default" | "compact";
   className?: string;
   itemClassName?: string;
 }
@@ -20,10 +21,12 @@ export function BulletList({
   items,
   variant = "bullet",
   accent = "cyan",
+  density = "default",
   className = "",
   itemClassName = "",
 }: BulletListProps) {
   const isCyan = accent === "cyan";
+  const isCompact = density === "compact";
 
   const numberColorClasses = isCyan
     ? "bg-[var(--accent-cyan)]/15 text-[var(--accent-cyan)] border-[var(--accent-cyan)]/30 group-hover:bg-[var(--accent-cyan)]/25 group-hover:border-[var(--accent-cyan)]/60"
@@ -33,8 +36,13 @@ export function BulletList({
     ? "hover:border-[var(--accent-cyan)]/35"
     : "hover:border-[var(--action-indigo)]/40";
 
+  const containerGap = isCompact ? "gap-1.5 sm:gap-2" : "gap-2.5 sm:gap-3";
+  const itemPadding = isCompact ? "p-2 sm:p-2.5 gap-2.5 sm:gap-3 rounded-lg" : "p-3 sm:p-3.5 gap-3.5 sm:gap-4 rounded-xl";
+  const numberSize = isCompact ? "w-6 h-6 rounded-md text-[11px] font-bold" : "w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-xs sm:text-sm font-semibold";
+  const textSize = isCompact ? "text-xs sm:text-[13px] font-medium leading-snug" : "text-sm sm:text-base font-medium leading-relaxed";
+
   return (
-    <ul className={`flex flex-col gap-2.5 sm:gap-3 w-full ${className}`}>
+    <ul className={`flex flex-col ${containerGap} w-full ${className}`}>
       {items.map((item, index) => {
         const text = typeof item === "string" ? item : item.text;
         const customIcon = typeof item === "string" ? undefined : item.icon;
@@ -43,7 +51,7 @@ export function BulletList({
         return (
           <li
             key={key}
-            className={`group flex items-center gap-3.5 sm:gap-4 p-3 sm:p-3.5 rounded-xl bg-white/[0.02] hover:bg-white/[0.06] border border-white/5 transition-all duration-200 hover:translate-x-1.5 cursor-default ${hoverBorderClass} ${itemClassName}`}
+            className={`group flex items-center bg-white/[0.02] hover:bg-white/[0.06] border border-white/5 transition-all duration-200 hover:translate-x-1 cursor-default ${hoverBorderClass} ${itemPadding} ${itemClassName}`}
           >
             {customIcon ? (
               <span className="shrink-0 transition-transform duration-200 group-hover:scale-110">
@@ -52,17 +60,17 @@ export function BulletList({
             ) : variant === "number" ? (
               <span
                 aria-hidden="true"
-                className={`flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-xs sm:text-sm font-semibold shrink-0 border font-mono transition-all duration-200 group-hover:scale-110 ${numberColorClasses}`}
+                className={`flex items-center justify-center shrink-0 border font-mono transition-all duration-200 group-hover:scale-110 ${numberSize} ${numberColorClasses}`}
               >
                 {String(index + 1).padStart(2, "0")}
               </span>
             ) : variant === "icon" ? (
               <span
                 aria-hidden="true"
-                className="flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg shrink-0 bg-[var(--accent-cyan)]/15 text-[var(--accent-cyan)] border border-[var(--accent-cyan)]/30 transition-all duration-200 group-hover:scale-110 group-hover:bg-[var(--accent-cyan)]/25 group-hover:border-[var(--accent-cyan)]/50"
+                className="flex items-center justify-center w-6 h-6 rounded-md shrink-0 bg-[var(--accent-cyan)]/15 text-[var(--accent-cyan)] border border-[var(--accent-cyan)]/30 transition-all duration-200 group-hover:scale-110 group-hover:bg-[var(--accent-cyan)]/25 group-hover:border-[var(--accent-cyan)]/50"
               >
                 <svg
-                  className="w-4 h-4 transition-transform duration-200 group-hover:translate-x-0.5"
+                  className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
                   viewBox="0 0 20 20"
                   fill="currentColor"
                   xmlns="http://www.w3.org/2000/svg"
@@ -77,10 +85,10 @@ export function BulletList({
             ) : (
               <span
                 aria-hidden="true"
-                className="w-2 h-2 rounded-full shrink-0 bg-[var(--accent-cyan)] transition-transform duration-200 group-hover:scale-125"
+                className="w-1.5 h-1.5 rounded-full shrink-0 bg-[var(--accent-cyan)] transition-transform duration-200 group-hover:scale-125"
               />
             )}
-            <span className="text-sm sm:text-base font-medium leading-relaxed text-slate-200 group-hover:text-white transition-colors duration-200">
+            <span className={`${textSize} text-slate-200 group-hover:text-white transition-colors duration-200 truncate`}>
               {text}
             </span>
           </li>

@@ -16,19 +16,19 @@ export const introContent: IntroContent = {
     items: [
       "What is a website?",
       "Types of websites",
-      "Mobile / Desktop apps vs. Web apps",
-      "What is the Frontend?",
-      "What is the Backend?",
-      "What is a Database?",
+      "Native Apps vs. Web Applications",
+      "How the web works (Browser to Server)",
+      "Frontend, Backend & Database",
+      "Hosting, DNS & Domain names",
       "Understanding Data Flow",
-      "Static vs. Dynamic websites"
+      "Static vs. Dynamic websites",
     ],
   },
   right: {
     title: "The Development Lifecycle",
     items: [
       "Idea conception and brainstorming",
-      "Requirements specification (Cahier des Charges) & MVP definition",
+      "Requirements specification (Cahier des Charges) & MVP",
       "UI/UX Design and wireframing",
       "System architecture and planning",
       "Full-stack development (Frontend & Backend)",
@@ -36,4 +36,3 @@ export const introContent: IntroContent = {
     ],
   },
 };
-

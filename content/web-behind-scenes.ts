@@ -36,7 +36,7 @@ export interface WebBehindScenesContent {
 export const webBehindScenesContent: WebBehindScenesContent = {
   title: "Web Behind the Scenes",
   eyebrow: "Module 03 · Server & Execution Architecture",
-  badge: "Slide 05",
+  badge: "Slide 07",
   subtitle: "Inside the server runtime: How the backend receives your credentials, executes secure logic, and mints an authenticated session.",
   backend: {
     name: "PRODUCTION BACKEND ENGINE",

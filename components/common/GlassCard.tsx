@@ -5,6 +5,7 @@ export interface GlassCardProps {
   accent?: "cyan" | "indigo" | "amber";
   badge?: string;
   badgeStep?: string;
+  size?: "default" | "sm";
   className?: string;
 }
 
@@ -13,8 +14,11 @@ export function GlassCard({
   accent = "cyan",
   badge,
   badgeStep,
+  size = "default",
   className = "",
 }: GlassCardProps) {
+  const isSm = size === "sm";
+
   const accentColorClass =
     accent === "cyan"
       ? "text-[var(--accent-cyan)] border-[var(--accent-cyan)]/30 bg-[var(--accent-cyan)]/10"
@@ -43,9 +47,13 @@ export function GlassCard({
       ? "bg-[var(--base-amber)]"
       : "bg-[var(--action-indigo)]";
 
+  const paddingClass = isSm ? "p-4 sm:p-5 md:p-5.5" : "p-6 sm:p-8";
+  const badgeSpacing = isSm ? "mb-2.5 sm:mb-3" : "mb-4";
+  const badgeSize = isSm ? "px-2.5 py-0.5 text-[11px]" : "px-3 py-1 text-xs";
+
   return (
     <div
-      className={`relative rounded-2xl p-6 sm:p-8 backdrop-blur-xl bg-[var(--cards-charcoal)]/55 border border-white/10 shadow-[0_12px_36px_0_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1.5 ${glowHoverClass} group ${className}`}
+      className={`relative rounded-2xl ${paddingClass} backdrop-blur-xl bg-[var(--cards-charcoal)]/55 border border-white/10 shadow-[0_12px_36px_0_rgba(0,0,0,0.35)] transition-all duration-300 hover:-translate-y-1 ${glowHoverClass} group ${className}`}
     >
       {/* Top subtle glow accent line */}
       <div
@@ -55,9 +63,9 @@ export function GlassCard({
 
       {/* Eyebrow Badge */}
       {(badge || badgeStep) && (
-        <div className="flex items-center gap-2 mb-4">
+        <div className={`flex items-center gap-2 ${badgeSpacing}`}>
           <span
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold tracking-wider uppercase border ${accentColorClass}`}
+            className={`inline-flex items-center gap-1.5 ${badgeSize} rounded-full font-mono font-semibold tracking-wider uppercase border ${accentColorClass}`}
           >
             <span
               className={`w-1.5 h-1.5 rounded-full ${dotBg} animate-pulse`}
@@ -72,4 +80,3 @@ export function GlassCard({
     </div>
   );
 }
-

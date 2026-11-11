@@ -38,7 +38,7 @@ export const teachersSlideContent: TeachersSlideContent = {
       studyLevel: "Master 2 Informatique • AI Applied",
       role: "Full-Stack & AI Engineer",
       imageSrc:
-        "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=800&q=80",
+         "/images/mohamed.jpg",
       imageAlt: "Louahchi Mohamed",
       accent: "cyan",
       badge: "Instructor • Top Left",
@@ -71,13 +71,13 @@ export const teachersSlideContent: TeachersSlideContent = {
       studyLevel: "Master 2 Informatique",
       role: "Full-Stack Engineer & Instructor",
       imageSrc:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=800&q=80",
+        "/images/nazim.jpg",
       imageAlt: "Benali Nazim",
       accent: "indigo",
       badge: "Instructor • Bottom Right",
       portfolioUrl: "https://nazimbenali.dev",
       githubUrl: "https://github.com/benalinazim",
-      linkedinUrl: "https://linkedin.com/in/benali-nazim",
+      linkedinUrl: "https://www.linkedin.com/in/nazim-benalia-856920413/",
       combinedExperienceAndProjects: {
         title: "Experience & Projects",
         summary:

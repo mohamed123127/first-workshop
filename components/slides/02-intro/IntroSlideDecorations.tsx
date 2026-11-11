@@ -7,7 +7,7 @@ import {
   DataSineWave,
   IsometricWireCube,
 } from "@/components/common/decorations/TechDecorations";
-import { GitBranch, Layers, Cpu, Code2, Globe } from "lucide-react";
+import { GitBranch, Layers, Code2 } from "lucide-react";
 
 /**
  * Slide 2: Left Side (Part 01) Foundations Decorative Elements
@@ -72,4 +72,3 @@ export function IntroRightDecorations() {
     </div>
   );
 }
-

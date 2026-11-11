@@ -44,7 +44,7 @@ export const SLIDES_FLOW: Record<number, SlideRouteConfig> = {
   },
   4: {
     id: 4,
-    label: "04: How Web Works",
+    label: "04: Web vs Native",
     nextId: 5,
     prevId: 3,
     transitionToNext: "zoomIn",
@@ -52,9 +52,49 @@ export const SLIDES_FLOW: Record<number, SlideRouteConfig> = {
   },
   5: {
     id: 5,
-    label: "05: Behind the Scenes",
-    nextId: null,
+    label: "05: How Web Works",
+    nextId: 6,
     prevId: 4,
+    transitionToNext: "zoomIn",
+    transitionToPrev: "zoomIn",
+  },
+  6: {
+    id: 6,
+    label: "06: Workspace (In Progress)",
+    nextId: 7,
+    prevId: 5,
+    transitionToNext: "zoomIn",
+    transitionToPrev: "zoomIn",
+  },
+  7: {
+    id: 7,
+    label: "07: Behind the Scenes",
+    nextId: 8,
+    prevId: 6,
+    transitionToNext: "zoomIn",
+    transitionToPrev: "zoomIn",
+  },
+  8: {
+    id: 8,
+    label: "08: Project Lifecycle",
+    nextId: 9,
+    prevId: 7,
+    transitionToNext: "zoomIn",
+    transitionToPrev: "zoomIn",
+  },
+  9: {
+    id: 9,
+    label: "09: Things Good to Know",
+    nextId: 10,
+    prevId: 8,
+    transitionToNext: "zoomIn",
+    transitionToPrev: "zoomIn",
+  },
+  10: {
+    id: 10,
+    label: "10: Grand Summary",
+    nextId: 1,
+    prevId: 9,
     transitionToNext: "fade",
     transitionToPrev: "zoomIn",
   },
@@ -90,7 +130,7 @@ export function getPrevSlideFlow(currentId: number): {
   motion: MotionType;
 } {
   const current = getSlideConfig(currentId);
-  const prevId = current.prevId ?? 5;
+  const prevId = current.prevId ?? 10;
   return {
     prevId,
     motion: current.transitionToPrev,

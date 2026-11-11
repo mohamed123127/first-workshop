@@ -5,6 +5,7 @@ export interface SectionTitleProps {
   className?: string;
   as?: "h1" | "h2" | "h3" | "h4";
   subtitle?: ReactNode;
+  size?: "default" | "sm";
 }
 
 export function SectionTitle({
@@ -12,20 +13,26 @@ export function SectionTitle({
   className = "",
   as: Component = "h2",
   subtitle,
+  size = "default",
 }: SectionTitleProps) {
+  const isSm = size === "sm";
+
   return (
-    <header className="mb-6 sm:mb-8">
+    <header className={isSm ? "mb-3 sm:mb-4" : "mb-6 sm:mb-8"}>
       {subtitle && (
-        <p className="text-xs sm:text-sm font-mono tracking-wider uppercase text-[var(--accent-cyan)] mb-2">
+        <p className={`font-mono tracking-wider uppercase text-[var(--accent-cyan)] ${isSm ? "text-[11px] mb-1" : "text-xs sm:text-sm mb-2"}`}>
           {subtitle}
         </p>
       )}
       <Component
-        className={`text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white ${className}`}
+        className={`${
+          isSm
+            ? "text-lg sm:text-xl md:text-2xl font-bold tracking-tight text-white"
+            : "text-2xl sm:text-3xl lg:text-4xl font-bold tracking-tight text-white"
+        } ${className}`}
       >
         {children}
       </Component>
     </header>
   );
 }
-

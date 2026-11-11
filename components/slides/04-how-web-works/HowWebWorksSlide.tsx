@@ -142,7 +142,7 @@ export function HowWebWorksSlide({
     >
       <SlideBackground
         theme="indigo"
-        slideTag="SLIDE_04 // BROWSER_CORE"
+        slideTag="SLIDE_05 // BROWSER_CORE"
         glowOrbs={[
           { color: "cyan", position: "top-left", size: "w-[36rem] h-[36rem]", opacity: "opacity-15" },
           { color: "indigo", position: "bottom-right", size: "w-[40rem] h-[40rem]", opacity: "opacity-20" },
