@@ -21,3 +21,6 @@ export type { SlideHeaderProps } from "./SlideHeader";
 
 export { SwipeSlider } from "./SwipeSlider";
 export type { SwipeSliderProps } from "./SwipeSlider";
+
+export { FlashMemoryBadge } from "./FlashMemoryBadge";
+export type { FlashMemoryBadgeProps } from "./FlashMemoryBadge";

@@ -22,6 +22,7 @@ import {
   Play,
   RotateCcw,
 } from "lucide-react";
+import { FlashMemoryBadge } from "@/components/common";
 
 export interface ProjectLifecycleSlideProps {
   content?: ProjectLifecycleContent;
@@ -178,9 +179,8 @@ export function ProjectLifecycleSlide({
             {/* Interactive Power Stats Badge */}
             <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs font-mono text-slate-300">
               <Zap
-                className={`w-3.5 h-3.5 transition-colors ${
-                  totalPowered > 0 ? "text-cyan-400 fill-cyan-400" : "text-slate-500"
-                }`}
+                className={`w-3.5 h-3.5 transition-colors ${totalPowered > 0 ? "text-cyan-400 fill-cyan-400" : "text-slate-500"
+                  }`}
               />
               <span>
                 <strong className={totalPowered > 0 ? "text-cyan-300" : "text-slate-400"}>
@@ -189,6 +189,19 @@ export function ProjectLifecycleSlide({
                 Modules Powered
               </span>
             </div>
+
+            {/* Flash Memory Badge */}
+            <FlashMemoryBadge
+              title="Must Remember"
+              badgeLabel="KEY CONCEPT"
+              description="Every professional project follows a lifecycle: Plan → Design → Build → Test → Deploy → Maintain. Following these steps helps build reliable, fast, secure, and easy-to-maintain applications."
+              points={[
+                "Plan before building — understand the problem, define the requirements, and decide what the application should do.",
+                "Design before coding — organize the pages, define how users will interact with the application, and keep the design consistent.",
+                "Build with good architecture — organize the project properly so every part has a clear responsibility and future changes are easier.",
+                "Deploy and maintain — publish the application, monitor it, fix problems, and improve it based on user needs.",
+              ]}
+            />
           </div>
         }
       />
@@ -199,17 +212,16 @@ export function ProjectLifecycleSlide({
         <div className="flex flex-wrap items-center justify-between gap-2 p-2 rounded-2xl bg-[#0B132B]/85 border border-white/10 backdrop-blur-md">
           <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
             <span
-              className={`w-2 h-2 rounded-full ${
-                totalPowered > 0 ? "bg-cyan-400 animate-pulse" : "bg-slate-600"
-              }`}
+              className={`w-2 h-2 rounded-full ${totalPowered > 0 ? "bg-cyan-400 animate-pulse" : "bg-slate-600"
+                }`}
             />
             <span className="hidden sm:inline text-slate-400">Circuit State:</span>
             <span className="font-bold text-white">
               {totalPowered === 0
                 ? "Dormant (Cards OFF — Click card to light up)"
                 : totalPowered === totalSteps
-                ? "Full Circuit Energized ⚡"
-                : `${totalPowered} Active Conduit(s)`}
+                  ? "Full Circuit Energized ⚡"
+                  : `${totalPowered} Active Conduit(s)`}
             </span>
           </div>
 
@@ -219,11 +231,10 @@ export function ProjectLifecycleSlide({
               type="button"
               onClick={handlePlayRunwaySequence}
               disabled={isSequencePlaying}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-xl border transition-all cursor-pointer font-bold ${
-                isSequencePlaying
-                  ? "bg-cyan-500/30 text-cyan-200 border-cyan-400 animate-pulse"
-                  : "bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border-cyan-500/30 hover:border-cyan-400/50"
-              }`}
+              className={`flex items-center gap-1.5 px-3 py-1 rounded-xl border transition-all cursor-pointer font-bold ${isSequencePlaying
+                ? "bg-cyan-500/30 text-cyan-200 border-cyan-400 animate-pulse"
+                : "bg-cyan-500/15 hover:bg-cyan-500/25 text-cyan-300 border-cyan-500/30 hover:border-cyan-400/50"
+                }`}
               title="Automatically energizes step by step"
             >
               <Play className="w-3 h-3 fill-current" />
@@ -254,6 +265,7 @@ export function ProjectLifecycleSlide({
 
         {/* ── SNAKE FLOW ROADMAP (S-Curve connecting all 9 steps with glowing wires) ── */}
         <div className="w-full flex-1 flex flex-col justify-center min-h-0">
+
           <SnakeFlowRoadmap
             steps={content.steps}
             selectedStepId={selectedStep?.id ?? null}

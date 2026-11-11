@@ -7,29 +7,29 @@ export interface LifecycleStep {
   shortTitle: string;
   phase: string;
   iconName:
-    | "brain"
-    | "lightbulb"
-    | "fileText"
-    | "palette"
-    | "network"
-    | "code"
-    | "checkCircle"
-    | "cloud"
-    | "rocket";
+  | "brain"
+  | "lightbulb"
+  | "fileText"
+  | "palette"
+  | "network"
+  | "code"
+  | "checkCircle"
+  | "cloud"
+  | "rocket";
   summary: string;
   fullDescription: string;
   keyDeliverables: string[];
   toolsUsed: string[];
   visualType:
-    | "idea_canvas"
-    | "brainstorm_board"
-    | "cahier_charges"
-    | "design_system"
-    | "architecture_diagram"
-    | "coding_split"
-    | "testing_suite"
-    | "deployment_pipeline"
-    | "launch_celebration";
+  | "idea_canvas"
+  | "brainstorm_board"
+  | "cahier_charges"
+  | "design_system"
+  | "architecture_diagram"
+  | "coding_split"
+  | "testing_suite"
+  | "deployment_pipeline"
+  | "launch_celebration";
   accent: "cyan" | "indigo" | "amber" | "emerald";
   badgeLabel?: string;
   isParallelBranch?: boolean;
@@ -157,7 +157,7 @@ export const projectLifecycleContent: ProjectLifecycleContent = {
       summary:
         "Engineering the technical foundation: database schema, API contracts, hosting choice, and security protocols.",
       fullDescription:
-        "Engineers map out how data flows through the application: choosing the database (PostgreSQL, MongoDB), designing the ERD schema, modeling REST or GraphQL APIs, authentication mechanisms (JWT / OAuth), and server infrastructure.",
+        "Experienced software engineers and system architects make critical technical decisions about how the system should be built. They design the database structure, data flow, APIs, authentication, security, and server infrastructure. Their responsibility is to ensure the system is scalable, maintainable, extendable, and secure, so it can grow, support new features, and adapt to future business needs without requiring a complete rebuild.",
       keyDeliverables: [
         "Entity-Relationship Diagram (ERD Database Schema)",
         "API Route Architecture & Data Flow Diagram",
@@ -182,12 +182,17 @@ export const projectLifecycleContent: ProjectLifecycleContent = {
       fullDescription:
         "Frontend developers translate Figma components into clean React/Next.js code with Tailwind CSS, while backend developers build secure API endpoints, integrate databases, write business logic, and enforce authentication rules.",
       keyDeliverables: [
-        "Frontend Client Application with responsive UI & animations",
-        "Backend REST / GraphQL API Services & Middleware",
-        "Database Migrations, Seeders & ORM models",
-        "Clean, version-controlled Git codebase",
+        "Build UI: Create pages and components.",
+        "Responsive Design: Support all screen sizes.",
+        "API Integration: Connect UI to backend.",
+        "User Experience: Ensure smooth interactions.",
       ],
-      toolsUsed: ["VS Code", "Next.js", "TypeScript", "Tailwind CSS", "GitHub"],
+      toolsUsed: [
+        "Business Logic: Implement system rules",
+        "Database Management: Store and manage data",
+        "API Development: Handle frontend requests",
+        "Security: Protect data and access",
+      ],
       visualType: "coding_split",
     },
     {

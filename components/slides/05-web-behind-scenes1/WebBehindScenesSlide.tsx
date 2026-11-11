@@ -26,6 +26,8 @@ import {
   ZoomOut,
   Globe,
 } from "lucide-react";
+import { FlashMemoryBadge } from "@/components/common";
+
 
 export interface WebBehindScenesSlideProps {
   content?: WebBehindScenesContent;
@@ -175,13 +177,18 @@ export function WebBehindScenesSlide({
         eyebrow={content.eyebrow}
         slideNumber={content.badge}
         accent="indigo"
+        rightContent={
+          <FlashMemoryBadge
+            title="Must Remember"
+            badgeLabel="KEY CONCEPT"
+            description="Every web request flows: Browser sends HTTP → Backend processes logic → Database stores/retrieves data → Response returns. This request/response lifecycle is the foundation of all web applications."
+          />
+        }
       />
-
       {/* ══════════════════════════════════════════════════════════
           MAIN  ─  two columns:  [Login Prototype]  |  [Backend]
           ══════════════════════════════════════════════════════════ */}
       <div className="relative z-10 flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pb-6 flex items-stretch gap-6 min-h-0">
-
         {/* ════════════════════════════════════════
             LEFT  ─  Login page prototype (bigger)
             ════════════════════════════════════════ */}
@@ -441,8 +448,8 @@ export function WebBehindScenesSlide({
                   }
                   title={isAllUnitsCompleted ? "Zoom out to Slide 08: The Internet" : "Next diagram unit"}
                   className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg font-mono text-xs font-bold transition-all cursor-pointer ${isAllUnitsCompleted
-                      ? "bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white ring-2 ring-cyan-300/60 shadow-[0_0_20px_rgba(6,182,212,0.6)]"
-                      : "bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white shadow-[0_0_14px_rgba(99,102,241,0.4)]"
+                    ? "bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white ring-2 ring-cyan-300/60 shadow-[0_0_20px_rgba(6,182,212,0.6)]"
+                    : "bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white shadow-[0_0_14px_rgba(99,102,241,0.4)]"
                     }`}
                 >
                   {isAllUnitsCompleted ? (

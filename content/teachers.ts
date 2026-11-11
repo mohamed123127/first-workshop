@@ -38,13 +38,13 @@ export const teachersSlideContent: TeachersSlideContent = {
       studyLevel: "Master 2 Informatique • AI Applied",
       role: "Full-Stack & AI Engineer",
       imageSrc:
-         "/images/mohamed.jpg",
+        "/images/mohamed.jpg",
       imageAlt: "Louahchi Mohamed",
       accent: "cyan",
       badge: "Instructor • Top Left",
-      portfolioUrl: "https://louahchimohamed.vercel.app",
-      githubUrl: "https://github.com/Mohamed-Louahchi",
-      linkedinUrl: "https://linkedin.com/in/mohamed-louahchi",
+      portfolioUrl: "https://louahchi-mohamed-portofolio.vercel.app/",
+      githubUrl: "https://github.com/mohamed123127",
+      linkedinUrl: "https://www.linkedin.com/in/mohamed-louahchi-55aba3238/",
       combinedExperienceAndProjects: {
         title: "Experience & Projects",
         summary:
@@ -85,7 +85,7 @@ export const teachersSlideContent: TeachersSlideContent = {
         highlights: [
           "Expertise in Full-Stack development and modern frontend/backend engineering",
           "Currently working part-time remote job",
-          "Specialized in developing and integrating AI applications and autonomous agents",       
+          "Specialized in developing and integrating AI applications and autonomous agents",
           "Project: Khawa Tech — Multi-tenant POS and inventory management SaaS and more...",
         ],
         tags: [
@@ -100,7 +100,7 @@ export const teachersSlideContent: TeachersSlideContent = {
           "..."
         ],
       },
-      
-  },
+
+    },
   ],
 };

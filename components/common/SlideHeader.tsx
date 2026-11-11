@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { FlashMemoryBadge, type FlashMemoryBadgeProps } from "./FlashMemoryBadge";
 
 export interface SlideHeaderProps {
   title: string;
@@ -7,6 +8,7 @@ export interface SlideHeaderProps {
   slideNumber?: string;
   accent?: "cyan" | "indigo" | "amber";
   rightContent?: ReactNode;
+  mustRemember?: boolean | string | FlashMemoryBadgeProps;
   className?: string;
 }
 
@@ -17,6 +19,7 @@ export function SlideHeader({
   slideNumber,
   accent = "cyan",
   rightContent,
+  mustRemember,
   className = "",
 }: SlideHeaderProps) {
   const isCyan = accent === "cyan";
@@ -71,6 +74,16 @@ export function SlideHeader({
 
         {/* Right Section: Animated Slide Number Badge or Custom Content */}
         <div className="flex items-center gap-3 shrink-0">
+          {mustRemember && (
+            typeof mustRemember === "boolean" ? (
+              <FlashMemoryBadge />
+            ) : typeof mustRemember === "string" ? (
+              <FlashMemoryBadge description={mustRemember} />
+            ) : (
+              <FlashMemoryBadge {...mustRemember} />
+            )
+          )}
+
           {rightContent}
 
           {slideNumber && (

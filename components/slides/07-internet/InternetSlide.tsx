@@ -31,6 +31,7 @@ import {
   Lock,
   Search,
 } from "lucide-react";
+import { FlashMemoryBadge } from "@/components/common";
 
 export interface InternetSlideProps {
   content?: InternetArchitectureContent;
@@ -191,6 +192,19 @@ export function InternetSlide({
         eyebrow={content.eyebrow}
         slideNumber={content.badge}
         accent="cyan"
+        rightContent={
+          <FlashMemoryBadge
+            title="Must Remember"
+            badgeLabel="KEY CONCEPT"
+            description="Every website request travels: Browser → Domain → DNS → Hosting Server → Frontend/Backend → Database. This request lifecycle is fundamental to all web development."
+            points={[
+              "Domain names are human-friendly aliases for IP addresses (e.g. devup-club.dz → 195.154.122.89)",
+              "DNS acts as the internet's phonebook — it translates domain names to IPs in < 20ms",
+              "Every server has a public IP address you can discover with: curl ifconfig.me",
+              "The hosting server runs your Frontend , Backend and Database",
+            ]}
+          />
+        }
       />
 
       {/* Main Workspace Container */}
@@ -223,11 +237,10 @@ export function InternetSlide({
               <button
                 type="button"
                 onClick={handleNextPhase}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white font-bold transition-all cursor-pointer text-xs ${
-                  currentPhase >= 4
-                    ? "bg-gradient-to-r from-emerald-600 via-cyan-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 shadow-[0_0_18px_rgba(16,185,129,0.5)] ring-1 ring-cyan-300/50"
-                    : "bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 shadow-[0_0_12px_rgba(6,182,212,0.4)]"
-                }`}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-white font-bold transition-all cursor-pointer text-xs ${currentPhase >= 4
+                  ? "bg-gradient-to-r from-emerald-600 via-cyan-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 shadow-[0_0_18px_rgba(16,185,129,0.5)] ring-1 ring-cyan-300/50"
+                  : "bg-gradient-to-r from-cyan-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 shadow-[0_0_12px_rgba(6,182,212,0.4)]"
+                  }`}
                 title={
                   currentPhase < 4
                     ? `Reveal ${content.revealPhases[currentPhase]?.label}`

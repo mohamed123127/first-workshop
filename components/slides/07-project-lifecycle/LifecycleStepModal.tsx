@@ -315,7 +315,7 @@ export function LifecycleStepModal({
                           Frontend (React / Tailwind)
                         </span>
                         <pre className="text-slate-300 text-[10px] leading-tight">
-{`export function LoginCard() {
+                          {`export function LoginCard() {
   const [email, setEmail] = useState("");
   return <button onClick={submit}>Log In</button>;
 }`}
@@ -326,7 +326,7 @@ export function LifecycleStepModal({
                           Backend (Node / Express)
                         </span>
                         <pre className="text-slate-300 text-[10px] leading-tight">
-{`app.post('/api/auth', async (req, res) => {
+                          {`app.post('/api/auth', async (req, res) => {
   const user = await db.user.find(req.body);
   return res.json({ token });
 });`}
@@ -409,7 +409,7 @@ export function LifecycleStepModal({
                 <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-2">
                   <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-slate-200">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    <span>Key Deliverables</span>
+                    <span>{step.visualType == "coding_split" ? "Frontend Tasks" : "Key Deliverables"}</span>
                   </div>
                   <ul className="space-y-1.5 text-xs text-slate-300 font-sans">
                     {step.keyDeliverables.map((item, idx) => (
@@ -425,7 +425,7 @@ export function LifecycleStepModal({
                 <div className="p-3.5 rounded-2xl bg-white/[0.03] border border-white/10 space-y-2">
                   <div className="flex items-center gap-1.5 text-xs font-mono font-bold text-slate-200">
                     <Wrench className="w-4 h-4 text-cyan-400" />
-                    <span>Industry Tools Used</span>
+                    <span>{step.visualType == "coding_split" ? "Backend Tasks" : "Industry Tools Used"}</span>
                   </div>
                   <div className="flex flex-wrap gap-1.5 pt-1">
                     {step.toolsUsed.map((tool) => (
