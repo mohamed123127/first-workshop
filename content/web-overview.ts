@@ -81,16 +81,6 @@ export const webOverviewContent: WebOverviewContent = {
       accent: "indigo",
       placeholderLabel: "SaaS Platform Mockup",
     },
-    {
-      id: "portfolio",
-      title: "Portfolio & Creative Showcase",
-      subtitle: "Personal Brand & Projects",
-      description:
-        "Tailored presentation hubs for developers, designers, and creators highlighting case studies, skills, live demos, and contact channels.",
-      tags: ["Visuals", "Case Studies", "Interactive"],
-      accent: "cyan",
- imageSrc: "/images/portfolio.jpg",      
-      placeholderLabel: "Portfolio Mockup",
-    },
+
   ],
 };
