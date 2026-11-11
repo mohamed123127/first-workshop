@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, ChevronDown, ChevronUp } from "lucide-react";
 import { MotionType, slideContainerVariants, EASINGS } from "@/motion";
 import { getAllSlidesFlow, getNextSlideFlow, getPrevSlideFlow } from "@/components/slides/flow";
 import { TeachersSlide } from "@/components/slides/01-teachers";
@@ -10,14 +10,14 @@ import { IntroSlide } from "@/components/slides/02-intro";
 import { WebOverviewSlide } from "@/components/slides/03-web-overview";
 import { WebVsNativeSlide } from "@/components/slides/04-web-vs-native";
 import { HowWebWorksSlide } from "@/components/slides/04-how-web-works";
-import { Slide06Placeholder } from "@/components/slides/06-in-progress";
+
 
 // import { WebBehindScenesSlide } from "@/components/slides/05-web-behind-scenes";
 import { DatabaseSlide } from "@/components/slides/06-database";
 import { InternetSlide } from "@/components/slides/07-internet";
 import { ProjectLifecycleSlide } from "@/components/slides/07-project-lifecycle";
 import { TeamworkGitSlide } from "@/components/slides/09-teamwork-git";
-import { GrandSummarySlide } from "@/components/slides/10-summary";
+
 import { WebBehindScenesSlide as WebBehindScenesSlide1 } from "@/components/slides/05-web-behind-scenes1";
 
 
@@ -28,6 +28,7 @@ export default function Home() {
   const [activeMotion, setActiveMotion] = useState<MotionType>("fade");
   const [slide6ActiveStep, setSlide6ActiveStep] = useState(1);
   const [slide6MaxRevealedStep, setSlide6MaxRevealedStep] = useState(1);
+  const [isDockMinimized, setIsDockMinimized] = useState(false);
 
   const goToSlide = useCallback((targetId: number, motion: MotionType) => {
     setActiveMotion(motion);
@@ -84,7 +85,7 @@ export default function Home() {
   return (
     <main className="min-h-screen w-full bg-[#0F172A] text-slate-100 relative flex flex-col justify-between overflow-x-hidden">
       {/* Active Slide Display with Linked Motion Transitions */}
-      <div className="w-full flex-1 relative overflow-hidden">
+      <div className="w-full flex-1 relative overflow-hidden pb-14 sm:pb-16">
         <AnimatePresence mode="wait" custom={activeMotion}>
           {currentSlide === 1 && (
             <motion.div
@@ -250,58 +251,126 @@ export default function Home() {
         </AnimatePresence>
       </div>
 
-      {/* Floating Presentation Dock Controls */}
-      <div className="fixed bottom-6 inset-x-0 flex items-center justify-center z-50 pointer-events-none px-4">
-        <div className="pointer-events-auto flex items-center gap-2 p-2 rounded-2xl bg-[#1E293B]/90 border border-[#334155] backdrop-blur-xl shadow-2xl">
-          {/* Previous Button */}
-          <button
-            onClick={handlePrev}
-            aria-label="Previous slide"
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-[#334155] transition-colors cursor-pointer"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
+      {/* Floating Presentation Dock Controls - Lowered & Collapsible */}
+      <div className="fixed bottom-2 sm:bottom-3 inset-x-0 flex items-center justify-center z-50 pointer-events-none px-2 sm:px-4">
+        <AnimatePresence mode="wait">
+          {isDockMinimized ? (
+            <motion.div
+              key="dock-minimized"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 15 }}
+              transition={{ duration: 0.2 }}
+              className="pointer-events-auto flex items-center gap-2 px-3 py-1 rounded-full bg-[#0F172A]/90 border border-white/10 backdrop-blur-xl shadow-2xl text-xs font-mono select-none"
+            >
+              <button
+                onClick={handlePrev}
+                aria-label="Previous slide"
+                className="p-1 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer"
+                title="Previous slide (Left Arrow)"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+              </button>
 
-          {/* Slide Indicator Pills */}
-          <div className="flex items-center gap-1.5 px-2">
-            {slideList.map((route) => {
-              const isActive = currentSlide === route.id;
-              return (
-                <button
-                  key={route.id}
-                  onClick={() =>
-                    goToSlide(
-                      route.id,
-                      route.id > currentSlide ? route.transitionToNext : route.transitionToPrev
-                    )
-                  }
-                  className={`relative px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${isActive
-                    ? "text-white"
-                    : "text-slate-400 hover:text-slate-200 hover:bg-[#334155]/60"
-                    }`}
-                >
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeSlideIndicator"
-                      className="absolute inset-0 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#06B6D4] -z-10 shadow-md"
-                      transition={{ type: "spring", stiffness: 350, damping: 30 }}
-                    />
-                  )}
-                  <span>Slide {String(route.id).padStart(2, "0")}</span>
-                </button>
-              );
-            })}
-          </div>
+              <span className="font-bold text-white text-[11px] px-1">
+                Slide {String(currentSlide).padStart(2, "0")} / {String(slideList.length).padStart(2, "0")}
+              </span>
 
-          {/* Next Button */}
-          <button
-            onClick={handleNext}
-            aria-label="Next slide"
-            className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-[#334155] transition-colors cursor-pointer"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
+              <button
+                onClick={handleNext}
+                aria-label="Next slide"
+                className="p-1 rounded-lg text-slate-400 hover:text-white transition-colors cursor-pointer"
+                title="Next slide (Right Arrow)"
+              >
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+
+              <span className="w-px h-3.5 bg-white/10 mx-0.5" />
+
+              <button
+                onClick={() => setIsDockMinimized(false)}
+                className="flex items-center gap-1 text-[10px] font-mono font-semibold text-cyan-300 hover:text-cyan-200 transition-colors cursor-pointer pl-0.5"
+                title="Show full slide navigation bar"
+              >
+                <ChevronUp className="w-3.5 h-3.5" />
+                <span className="hidden sm:inline">Show Bar</span>
+              </button>
+            </motion.div>
+          ) : (
+            <motion.div
+              key="dock-expanded"
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 15 }}
+              transition={{ duration: 0.2 }}
+              className="pointer-events-auto flex items-center gap-1 sm:gap-1.5 p-1 sm:p-1.5 rounded-2xl bg-[#0F172A]/90 hover:bg-[#0F172A]/95 border border-white/10 backdrop-blur-xl shadow-2xl max-w-full overflow-x-auto select-none"
+            >
+              {/* Previous Button */}
+              <button
+                onClick={handlePrev}
+                aria-label="Previous slide"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
+                title="Previous slide (Left Arrow)"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+
+              {/* Slide Indicator Pills */}
+              <div className="flex items-center gap-1 px-1 overflow-x-auto">
+                {slideList.map((route) => {
+                  const isActive = currentSlide === route.id;
+                  return (
+                    <button
+                      key={route.id}
+                      onClick={() =>
+                        goToSlide(
+                          route.id,
+                          route.id > currentSlide ? route.transitionToNext : route.transitionToPrev
+                        )
+                      }
+                      className={`relative px-2 sm:px-2.5 py-1 rounded-xl text-[11px] sm:text-xs font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                        isActive
+                          ? "text-white font-bold"
+                          : "text-slate-400 hover:text-slate-200 hover:bg-white/5"
+                      }`}
+                    >
+                      {isActive && (
+                        <motion.div
+                          layoutId="activeSlideIndicator"
+                          className="absolute inset-0 rounded-xl bg-gradient-to-r from-[#6366F1] to-[#06B6D4] -z-10 shadow-md"
+                          transition={{ type: "spring", stiffness: 350, damping: 30 }}
+                        />
+                      )}
+                      <span>Slide {String(route.id).padStart(2, "0")}</span>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Next Button */}
+              <button
+                onClick={handleNext}
+                aria-label="Next slide"
+                className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
+                title="Next slide (Right Arrow)"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+
+              <span className="w-px h-4 bg-white/10 mx-0.5 shrink-0" />
+
+              {/* Minimize Dock Button */}
+              <button
+                onClick={() => setIsDockMinimized(true)}
+                className="p-1.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors cursor-pointer shrink-0"
+                title="Minimize bar (reveals full page)"
+                aria-label="Minimize bar"
+              >
+                <ChevronDown className="w-4 h-4" />
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </main>
   );

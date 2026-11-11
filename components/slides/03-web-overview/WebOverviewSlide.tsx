@@ -96,8 +96,8 @@ export function WebOverviewSlide({
             </p>
           </div>
 
-          {/* Cards Grid with click-to-pop-up and hover zoom */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Cards Grid: 2x2 carré layout */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 lg:gap-6 max-w-5xl mx-auto w-full">
             {content.types.map((type) => (
               <MediaCard
                 key={type.id}

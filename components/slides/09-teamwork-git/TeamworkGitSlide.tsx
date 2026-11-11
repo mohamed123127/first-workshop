@@ -13,7 +13,9 @@ import { SlideBackground } from "@/components/common/decorations/SlideBackground
 import {
   Users,
   GitBranch,
+  GitCommit,
   GitPullRequest,
+  UploadCloud,
   CheckCircle2,
   MessageCircle,
   Sparkles,
@@ -257,10 +259,10 @@ export function TeamworkGitSlide({
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -12 }}
                 transition={{ duration: 0.3 }}
-                className="w-full flex flex-col gap-3.5"
+                className="w-full max-w-5xl mx-auto flex flex-col gap-3.5"
               >
                 {/* 1. Comparison Header: Git (Local) vs GitHub (Cloud) */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 w-full">
                   {/* Git Box */}
                   <div className="p-3.5 rounded-2xl bg-[#0A1329]/90 border border-cyan-400/30 flex items-start gap-3 backdrop-blur-md shadow-md">
                     <div className="p-2 rounded-xl bg-cyan-500/15 text-cyan-400 shrink-0">
@@ -294,15 +296,22 @@ export function TeamworkGitSlide({
                   </div>
                 </div>
 
-                {/* 2. Interactive 4-Step Team Flow Runway */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5">
-                  {content.gitSteps.map((step) => {
-                    const isActive = activeGitStep === step.step;
+                {/* 2. Interactive Git Concepts Runway */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 w-full">
+                  {content.gitSteps.map((item) => {
+                    const isActive = activeGitStep === item.step;
+                    const getConceptIcon = () => {
+                      if (item.step === 1) return <GitBranch className="w-3.5 h-3.5" />;
+                      if (item.step === 2) return <GitCommit className="w-3.5 h-3.5" />;
+                      if (item.step === 3) return <UploadCloud className="w-3.5 h-3.5" />;
+                      return <GitPullRequest className="w-3.5 h-3.5" />;
+                    };
+
                     return (
                       <div
-                        key={step.step}
-                        onClick={() => setActiveGitStep(step.step)}
-                        className={`p-3 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-2 backdrop-blur-md ${
+                        key={item.step}
+                        onClick={() => setActiveGitStep(item.step)}
+                        className={`p-3 rounded-2xl border-2 transition-all cursor-pointer flex flex-col justify-between gap-2.5 backdrop-blur-md ${
                           isActive
                             ? "bg-[#0B1530] border-cyan-400 shadow-[0_0_25px_rgba(6,182,212,0.4)] scale-102"
                             : "bg-black/35 border-white/10 hover:border-white/25 hover:bg-white/5 opacity-75 hover:opacity-100"
@@ -310,29 +319,28 @@ export function TeamworkGitSlide({
                       >
                         <div className="flex items-center justify-between text-xs font-mono">
                           <span
-                            className={`font-bold px-2 py-0.5 rounded-md ${
+                            className={`font-semibold px-2 py-0.5 rounded-md flex items-center gap-1.5 ${
                               isActive
                                 ? "bg-cyan-500/20 text-cyan-300 border border-cyan-400/40"
-                                : "bg-white/5 text-slate-400"
+                                : "bg-white/5 text-slate-300"
                             }`}
                           >
-                            STEP 0{step.step}
+                            {getConceptIcon()}
+                            <span>{item.label}</span>
                           </span>
-                          <span className="text-[10px] text-slate-400">{step.whoRunsIt}</span>
+                          <span className="text-[10px] text-slate-400">{item.whoRunsIt}</span>
                         </div>
 
-                        <div className="font-bold text-sm text-white">{step.label}</div>
-
                         <div className="p-1.5 rounded-lg bg-black/60 border border-white/5 text-[10px] font-mono text-cyan-300 truncate">
-                          <code>{step.cmd}</code>
+                          <code>{item.cmd}</code>
                         </div>
                       </div>
                     );
                   })}
                 </div>
 
-                {/* 3. Active Step Deep Dive Card */}
-                <div className="p-4 rounded-2xl bg-black/60 border border-cyan-500/30 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl">
+                {/* 3. Active Concept Deep Dive Card */}
+                <div className="p-4 rounded-2xl bg-black/60 border border-cyan-500/30 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xl w-full">
                   <div className="space-y-1.5 flex-1">
                     <div className="flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
