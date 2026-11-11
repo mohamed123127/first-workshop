@@ -84,7 +84,7 @@ export const SLIDES_FLOW: Record<number, SlideRouteConfig> = {
   },
   9: {
     id: 9,
-    label: "09: Project Lifecycle",
+    label: "09: othier examples",
     nextId: 10,
     prevId: 8,
     transitionToNext: "zoomIn",
@@ -92,7 +92,7 @@ export const SLIDES_FLOW: Record<number, SlideRouteConfig> = {
   },
   10: {
     id: 10,
-    label: "10: Things Good to Know",
+    label: "10: Project Lifecycle",
     nextId: 11,
     prevId: 9,
     transitionToNext: "zoomIn",

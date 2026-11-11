@@ -217,7 +217,7 @@ export default function Home() {
 
           {currentSlide === 9 && (
             <motion.div
-              key="slide-9"
+              key="slide-10"
               variants={currentVariants}
               initial="enter"
               animate="center"
@@ -231,10 +231,9 @@ export default function Home() {
               />
             </motion.div>
           )}
-
           {currentSlide === 10 && (
             <motion.div
-              key="slide-10"
+              key="slide-11"
               variants={currentVariants}
               initial="enter"
               animate="center"
