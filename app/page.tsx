@@ -11,10 +11,14 @@ import { WebOverviewSlide } from "@/components/slides/03-web-overview";
 import { WebVsNativeSlide } from "@/components/slides/04-web-vs-native";
 import { HowWebWorksSlide } from "@/components/slides/04-how-web-works";
 import { Slide06Placeholder } from "@/components/slides/06-in-progress";
-import { WebBehindScenesSlide } from "@/components/slides/05-web-behind-scenes";
+
 import { ProjectLifecycleSlide } from "@/components/slides/07-project-lifecycle";
 import { TeamworkGitSlide } from "@/components/slides/09-teamwork-git";
 import { GrandSummarySlide } from "@/components/slides/10-summary";
+import { WebBehindScenesSlide } from "@/components/slides/05-web-behind-scenes1";
+
+
+
 
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(1);
