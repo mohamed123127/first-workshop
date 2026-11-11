@@ -23,6 +23,7 @@ export interface ExecutionDiagramProps {
   onNextStep: () => void;
   onPrevStep: () => void;
   onSelectStep: (stepId: number) => void;
+  onDatabaseClick?: () => void;
   className?: string;
 }
 
@@ -33,6 +34,7 @@ export function ExecutionDiagram({
   onNextStep,
   onPrevStep,
   onSelectStep,
+  onDatabaseClick,
   className = "",
 }: ExecutionDiagramProps) {
   // Icon mapper per unit
@@ -124,27 +126,16 @@ export function ExecutionDiagram({
             <React.Fragment key={unit.id}>
               {/* DIAGRAM UNIT CARD */}
               <div className="relative flex flex-col items-center shrink-0">
-                {/* ── IF "CHECK INTO DB" UNIT: DRAW DATABASE ICON & ARROW ABOVE IT ── */}
-                {unit.hasDatabaseTop && (
+                {/* ── IF "CHECK INTO DB" UNIT: Show DB pulse indicator above ── */}
+                {unit.hasDatabaseTop && isSelected && (
                   <motion.div
-                    initial={{ opacity: 0, y: -6 }}
-                    animate={
-                      isRevealed
-                        ? { opacity: 1, y: 0 }
-                        : { opacity: 0.35, y: -2 }
-                    }
-                    className="absolute -top-8 flex flex-col items-center pointer-events-none z-20"
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="absolute -top-5 left-1/2 -translate-x-1/2 z-20 pointer-events-none"
                   >
-                    {/* Database Icon & Badge */}
-                    <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-[#111A2E] border border-indigo-400/50 shadow-[0_0_14px_rgba(99,102,241,0.6)] text-indigo-300 text-[10px] font-mono font-bold">
-                      <Database className="w-3.5 h-3.5 text-indigo-400 animate-pulse" />
-                      <span>PostgreSQL DB</span>
-                    </div>
-
-                    {/* Bi-directional Query Arrow pointing between DB and Unit */}
-                    <div className="flex items-center gap-0.5 text-indigo-400 -my-0.5">
-                      <ArrowUp className="w-2.5 h-2.5" />
-                      <ArrowDown className="w-2.5 h-2.5" />
+                    <div className="flex items-center gap-1 text-[9px] font-mono text-indigo-300">
+                      <ArrowUp className="w-2.5 h-2.5 text-indigo-400 animate-bounce" />
+                      <span className="font-bold">DB</span>
                     </div>
                   </motion.div>
                 )}

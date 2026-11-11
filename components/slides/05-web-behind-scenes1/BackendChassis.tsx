@@ -63,15 +63,11 @@ export function BackendChassis({
           </div>
         </div>
 
-        {/* TOP RIGHT: RUNTIME & SYSTEM TELEMETRY */}
+        {/* TOP RIGHT: RUNTIME TELEMETRY */}
         <div className="hidden lg:flex items-center gap-2 text-[11px] font-mono text-slate-400">
           <span className="flex items-center gap-1 px-2 py-0.5 rounded bg-white/5 border border-white/5">
             <Cpu className="w-3 h-3 text-cyan-400" />
             <span>{backend.runtime}</span>
-          </span>
-          <span className="flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/20">
-            <Database className="w-3 h-3" />
-            <span>DB POOL CONNECTED</span>
           </span>
         </div>
       </div>

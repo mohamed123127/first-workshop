@@ -6,6 +6,7 @@ export type MotionType =
   | "slideRight"
   | "centerPushZoom"
   | "zoomIn"
+  | "zoomOut"
   | "fade";
 
 export interface MotionConfig {

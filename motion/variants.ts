@@ -41,7 +41,14 @@ export const slideContainerVariants: Record<MotionType, Variants> = {
     exit: () => ({ scale: 1.2, opacity: 0 }),
   },
 
-  // Motion 6: Subtle clean fade
+  // Motion 6: Direct Zoom Out (Slide 5 -> Slide 8)
+  zoomOut: {
+    enter: () => ({ scale: 1.25, opacity: 0 }),
+    center: { scale: 1, opacity: 1 },
+    exit: () => ({ scale: 0.8, opacity: 0 }),
+  },
+
+  // Motion 7: Subtle clean fade
   fade: {
     enter: () => ({ opacity: 0 }),
     center: { opacity: 1 },

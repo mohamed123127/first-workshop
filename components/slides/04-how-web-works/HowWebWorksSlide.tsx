@@ -148,12 +148,10 @@ export function HowWebWorksSlide({
           { color: "indigo", position: "bottom-right", size: "w-[40rem] h-[40rem]", opacity: "opacity-20" },
         ]}
       />
-      <HowWebWorksFloatingDecorations />
 
       <SlideHeader title={content.title} eyebrow={content.eyebrow} slideNumber={content.badge} accent="cyan" />
 
       <div className="relative z-10 flex-1 w-full -auto px-2 sm:px-6 py-4 md:py-6 flex items-center justify-center gap-6">
-        <HowWebWorksLeftDiagram />
 
         {/* ═══════════════════ BROWSER CHROME ═══════════════════ */}
         <div className="flex-1 max-w-5xl h-[580px] sm:h-[640px] rounded-2xl border border-white/10 shadow-[0_25px_70px_rgba(0,0,0,0.65)] backdrop-blur-2xl bg-[#202124] flex flex-col overflow-hidden relative">
@@ -395,29 +393,7 @@ export function HowWebWorksSlide({
                         </span>
                       </div>
 
-                      {/* Top-Left Login / Logout Button */}
-                      {isLoggedIn ? (
-                        <button
-                          onClick={handleLogout}
-                          className="flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer bg-rose-500/20 hover:bg-rose-500/30 text-rose-300 border border-rose-500/40 shadow-[0_0_10px_rgba(244,63,94,0.25)]"
-                          title="Log out of DevUp Club"
-                        >
-                          <LogOut className="w-3.5 h-3.5" />
-                          <span>Logout</span>
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => setShowLogin((v) => !v)}
-                          className={`flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${showLogin
-                            ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-[0_0_10px_rgba(6,182,212,0.3)]"
-                            : "bg-indigo-600/30 hover:bg-indigo-600 text-indigo-200 hover:text-white border border-indigo-500/40"
-                            }`}
-                          title="Open login form inside frame"
-                        >
-                          <LogIn className="w-3.5 h-3.5" />
-                          <span>{showLogin ? "Close Login" : "Login"}</span>
-                        </button>
-                      )}
+
                     </div>
 
                     {/* Nav links */}
@@ -591,11 +567,11 @@ export function HowWebWorksSlide({
                                   animate={
                                     isZoomingIn
                                       ? {
-                                          scale: [1, 2.5, 28],
-                                          opacity: [1, 1, 0.9],
-                                          filter: ["blur(0px)", "blur(2px)", "blur(8px)"],
-                                          boxShadow: "0 0 100px 35px rgba(6, 182, 212, 0.9)",
-                                        }
+                                        scale: [1, 2.5, 28],
+                                        opacity: [1, 1, 0.9],
+                                        filter: ["blur(0px)", "blur(2px)", "blur(8px)"],
+                                        boxShadow: "0 0 100px 35px rgba(6, 182, 212, 0.9)",
+                                      }
                                       : {}
                                   }
                                   transition={
@@ -603,7 +579,7 @@ export function HowWebWorksSlide({
                                       ? { duration: 0.7, ease: [0.65, 0, 0.35, 1] }
                                       : undefined
                                   }
-                                  className="relative z-30 mt-1 w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-cyan-600 text-white text-xs font-bold shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-all cursor-pointer disabled:opacity-90 flex items-center justify-center gap-2 overflow-hidden"
+                                  className="relative z-30 mt-1 w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-cyan-600 text-white text-xs font-bold shadow-[0_0_20px_rgba(99,102,241,0.4)] transition-all cursor-zoom-in disabled:opacity-90 flex items-center justify-center gap-2 overflow-hidden"
                                 >
                                   {isZoomingIn ? (
                                     <span className="font-mono text-cyan-200 tracking-wider">ENTERING BACKEND...</span>
@@ -723,7 +699,6 @@ export function HowWebWorksSlide({
         </div>
         {/* ─────────────────────────────────────────────────────────── */}
 
-        <HowWebWorksRightDiagram />
       </div>
     </section>
   );

@@ -12,10 +12,13 @@ import { WebVsNativeSlide } from "@/components/slides/04-web-vs-native";
 import { HowWebWorksSlide } from "@/components/slides/04-how-web-works";
 import { Slide06Placeholder } from "@/components/slides/06-in-progress";
 
+// import { WebBehindScenesSlide } from "@/components/slides/05-web-behind-scenes";
+import { DatabaseSlide } from "@/components/slides/06-database";
+import { InternetSlide } from "@/components/slides/07-internet";
 import { ProjectLifecycleSlide } from "@/components/slides/07-project-lifecycle";
 import { TeamworkGitSlide } from "@/components/slides/09-teamwork-git";
 import { GrandSummarySlide } from "@/components/slides/10-summary";
-import { WebBehindScenesSlide } from "@/components/slides/05-web-behind-scenes1";
+import { WebBehindScenesSlide as WebBehindScenesSlide1 } from "@/components/slides/05-web-behind-scenes1";
 
 
 
@@ -23,6 +26,8 @@ import { WebBehindScenesSlide } from "@/components/slides/05-web-behind-scenes1"
 export default function Home() {
   const [currentSlide, setCurrentSlide] = useState(1);
   const [activeMotion, setActiveMotion] = useState<MotionType>("fade");
+  const [slide6ActiveStep, setSlide6ActiveStep] = useState(1);
+  const [slide6MaxRevealedStep, setSlide6MaxRevealedStep] = useState(1);
 
   const goToSlide = useCallback((targetId: number, motion: MotionType) => {
     setActiveMotion(motion);
@@ -164,9 +169,14 @@ export default function Home() {
               transition={{ duration: 0.5, ease: EASINGS.snappy }}
               className="w-full"
             >
-              <Slide06Placeholder
+              <WebBehindScenesSlide1
                 onPrevSlide={handlePrev}
                 onNextSlide={handleNext}
+                onOpenDatabase={() => goToSlide(7, "fade")}
+                activeStep={slide6ActiveStep}
+                setActiveStep={setSlide6ActiveStep}
+                maxRevealedStep={slide6MaxRevealedStep}
+                setMaxRevealedStep={setSlide6MaxRevealedStep}
               />
             </motion.div>
           )}
@@ -181,8 +191,8 @@ export default function Home() {
               transition={{ duration: 0.5, ease: EASINGS.snappy }}
               className="w-full"
             >
-              <WebBehindScenesSlide
-                onPrevSlide={handlePrev}
+              <DatabaseSlide
+                onPrevSlide={() => goToSlide(6, "fade")}
                 onNextSlide={handleNext}
               />
             </motion.div>
@@ -195,10 +205,10 @@ export default function Home() {
               initial="enter"
               animate="center"
               exit="exit"
-              transition={{ duration: 0.5, ease: EASINGS.snappy }}
+              transition={{ duration: 0.55, ease: EASINGS.snappy }}
               className="w-full"
             >
-              <ProjectLifecycleSlide
+              <InternetSlide
                 onPrevSlide={handlePrev}
                 onNextSlide={handleNext}
               />
@@ -215,7 +225,7 @@ export default function Home() {
               transition={{ duration: 0.5, ease: EASINGS.snappy }}
               className="w-full"
             >
-              <TeamworkGitSlide
+              <ProjectLifecycleSlide
                 onPrevSlide={handlePrev}
                 onNextSlide={handleNext}
               />
@@ -232,7 +242,7 @@ export default function Home() {
               transition={{ duration: 0.5, ease: EASINGS.snappy }}
               className="w-full"
             >
-              <GrandSummarySlide
+              <TeamworkGitSlide
                 onPrevSlide={handlePrev}
                 onNextSlide={handleNext}
               />
@@ -266,11 +276,10 @@ export default function Home() {
                       route.id > currentSlide ? route.transitionToNext : route.transitionToPrev
                     )
                   }
-                  className={`relative px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${
-                    isActive
-                      ? "text-white"
-                      : "text-slate-400 hover:text-slate-200 hover:bg-[#334155]/60"
-                  }`}
+                  className={`relative px-3 py-1.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${isActive
+                    ? "text-white"
+                    : "text-slate-400 hover:text-slate-200 hover:bg-[#334155]/60"
+                    }`}
                 >
                   {isActive && (
                     <motion.div

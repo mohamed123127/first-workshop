@@ -1,896 +1,517 @@
 "use client";
 
 import React, { useState, useEffect, useCallback } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  webBehindScenesContent,
+  type WebBehindScenesContent,
+} from "@/content/web-behind-scenes";
 import { SlideHeader } from "@/components/common/SlideHeader";
 import { SlideBackground } from "@/components/common/decorations/SlideBackground";
 import {
-  Laptop,
-  Server,
-  Database,
+  LogIn,
   ArrowRight,
   ArrowLeft,
-  CheckCircle2,
-  User,
-  KeyRound,
-  RotateCcw,
-  Sparkles,
-  Zap,
-  ShieldCheck,
-  Globe,
-  ShoppingBag,
-  DollarSign,
-  Package,
-  Layers,
   Lock,
+  Mail,
+  Eye,
+  EyeOff,
+  Database,
+  ArrowDown,
+  ArrowUp,
+  Server,
+  Inbox,
+  ShieldCheck,
+  Send,
+  ZoomOut,
+  Globe,
 } from "lucide-react";
 
 export interface WebBehindScenesSlideProps {
+  content?: WebBehindScenesContent;
   onNextSlide?: () => void;
   onPrevSlide?: () => void;
+  onOpenDatabase?: () => void;
   className?: string;
+  activeStep?: number;
+  setActiveStep?: React.Dispatch<React.SetStateAction<number>>;
+  maxRevealedStep?: number;
+  setMaxRevealedStep?: React.Dispatch<React.SetStateAction<number>>;
 }
 
-export type ExampleScenario = "login" | "product";
+/* ── unit colors ── */
+const UNIT_COLOR: Record<number, { border: string; glow: string; icon: string; ring: string; bg: string; text: string }> = {
+  1: { border: "border-cyan-400", glow: "shadow-[0_0_22px_rgba(6,182,212,0.5)]", icon: "text-cyan-400", ring: "ring-cyan-400/50", bg: "bg-cyan-950/40", text: "text-cyan-300" },
+  2: { border: "border-amber-400", glow: "shadow-[0_0_22px_rgba(245,158,11,0.5)]", icon: "text-amber-400", ring: "ring-amber-400/50", bg: "bg-amber-950/40", text: "text-amber-300" },
+  3: { border: "border-indigo-400", glow: "shadow-[0_0_22px_rgba(99,102,241,0.5)]", icon: "text-indigo-400", ring: "ring-indigo-400/50", bg: "bg-indigo-950/40", text: "text-indigo-300" },
+  4: { border: "border-emerald-400", glow: "shadow-[0_0_22px_rgba(16,185,129,0.5)]", icon: "text-emerald-400", ring: "ring-emerald-400/50", bg: "bg-emerald-950/40", text: "text-emerald-300" },
+};
 
-interface StepConfig {
-  step: number;
-  badge: string;
-  title: string;
-  desc: string;
-  buttonLabel: string;
+function UnitIcon({ id, className }: { id: number; className?: string }) {
+  const defaultCls = `w-4 h-4 ${UNIT_COLOR[id]?.icon ?? "text-slate-400"}`;
+  const cls = className ? `${className} ${UNIT_COLOR[id]?.icon ?? "text-slate-400"}` : defaultCls;
+  if (id === 1) return <Inbox className={cls} />;
+  if (id === 2) return <ShieldCheck className={cls} />;
+  if (id === 3) return <Database className={cls} />;
+  if (id === 4) return <Send className={cls} />;
+  return <Server className={cls} />;
 }
-
-const LOGIN_STEPS: StepConfig[] = [
-  {
-    step: 1,
-    badge: "Part 1 of 5",
-    title: "1. User Fills Login Form (Frontend)",
-    desc: "The user enters their email and password in the browser and clicks 'Log In'.",
-    buttonLabel: "Next: Send Request Over Network →",
-  },
-  {
-    step: 2,
-    badge: "Part 2 of 5",
-    title: "2. The Request Travels (Network)",
-    desc: "The browser packages the credentials and sends them across the internet to the server.",
-    buttonLabel: "Next: Server Checks Database →",
-  },
-  {
-    step: 3,
-    badge: "Part 3 of 5",
-    title: "3. Server Checks Database (Backend)",
-    desc: "The server receives the data and checks the database: 'Does Mohamed exist and does the password match?'",
-    buttonLabel: "Next: Return Response to Browser →",
-  },
-  {
-    step: 4,
-    badge: "Part 4 of 5",
-    title: "4. The Response Returns (Network)",
-    desc: "The server answers: 'Yes! Status 200 OK — Password is correct, here is the session token.'",
-    buttonLabel: "Next: Complete User Login →",
-  },
-  {
-    step: 5,
-    badge: "Part 5 of 5",
-    title: "5. User Logged In! (Success)",
-    desc: "The browser receives the green light, saves the session, and opens Mohamed's dashboard!",
-    buttonLabel: "↺ Replay From Part 1",
-  },
-];
-
-const PRODUCT_STEPS: StepConfig[] = [
-  {
-    step: 1,
-    badge: "Part 1 of 5",
-    title: "1. Store Owner Fills Product Form (Frontend)",
-    desc: "The seller fills product name ('AirPods Pro Max'), price ($249.00), and inventory (45 units), then clicks 'Publish to Store'.",
-    buttonLabel: "Next: Dispatch Product Data Over Network →",
-  },
-  {
-    step: 2,
-    badge: "Part 2 of 5",
-    title: "2. The POST Request Travels (Network)",
-    desc: "The browser packages the product details into a JSON payload and dispatches POST /api/v1/products across HTTPS to the backend.",
-    buttonLabel: "Next: Server Validates & Writes to Database →",
-  },
-  {
-    step: 3,
-    badge: "Part 3 of 5",
-    title: "3. Server Writes to Database (Backend)",
-    desc: "The backend server validates price > 0, executes SQL INSERT INTO products, and assigns unique ID #PRD-942.",
-    buttonLabel: "Next: Return 201 Created Confirmation →",
-  },
-  {
-    step: 4,
-    badge: "Part 4 of 5",
-    title: "4. The 201 Created Response Returns (Network)",
-    desc: "The server answers: '201 Created — Product successfully saved in database with ID #PRD-942 and URL generated.'",
-    buttonLabel: "Next: Publish Live on Storefront →",
-  },
-  {
-    step: 5,
-    badge: "Part 5 of 5",
-    title: "5. Product Live in Store! (Success)",
-    desc: "The browser receives the green light, updates the live store catalog, and displays the product card to customers!",
-    buttonLabel: "↺ Replay From Part 1",
-  },
-];
 
 export function WebBehindScenesSlide({
+  content = webBehindScenesContent,
+  onNextSlide,
+  onPrevSlide,
+  onOpenDatabase,
   className = "",
+  activeStep: controlledActiveStep,
+  setActiveStep: controlledSetActiveStep,
+  maxRevealedStep: controlledMaxRevealedStep,
+  setMaxRevealedStep: controlledSetMaxRevealedStep,
 }: WebBehindScenesSlideProps) {
-  // Scenario state: "login" or "product"
-  const [scenario, setScenario] = useState<ExampleScenario>("login");
+  const [internalActiveStep, setInternalActiveStep] = useState<number>(1);
+  const [internalMaxRevealedStep, setInternalMaxRevealedStep] = useState<number>(1);
+  const [showPassword, setShowPassword] = useState(false);
 
-  // Current active step (1 to 5)
-  const [currentStep, setCurrentStep] = useState<number>(1);
+  const activeStep = controlledActiveStep !== undefined ? controlledActiveStep : internalActiveStep;
+  const setActiveStep = controlledSetActiveStep !== undefined ? controlledSetActiveStep : setInternalActiveStep;
 
-  const steps = scenario === "login" ? LOGIN_STEPS : PRODUCT_STEPS;
-  const activeInfo = steps[currentStep - 1];
+  const maxRevealedStep = controlledMaxRevealedStep !== undefined ? controlledMaxRevealedStep : internalMaxRevealedStep;
+  const setMaxRevealedStep = controlledSetMaxRevealedStep !== undefined ? controlledSetMaxRevealedStep : setInternalMaxRevealedStep;
 
-  const handleNextPart = useCallback(() => {
-    setCurrentStep((prev) => (prev < 5 ? prev + 1 : 1));
-  }, []);
+  const isAllUnitsCompleted = activeStep >= content.diagramUnits.length;
 
-  const handlePrevPart = useCallback(() => {
-    setCurrentStep((prev) => (prev > 1 ? prev - 1 : 5));
-  }, []);
-
-  const handleReset = useCallback(() => {
-    setCurrentStep(1);
-  }, []);
-
-  const handleSwitchScenario = (newScenario: ExampleScenario) => {
-    setScenario(newScenario);
-    setCurrentStep(1);
+  const handleNext = () => {
+    if (isAllUnitsCompleted) {
+      onNextSlide?.();
+      return;
+    }
+    setActiveStep((prev) => {
+      const next = Math.min(prev + 1, content.diagramUnits.length);
+      setMaxRevealedStep((m) => Math.max(m, next));
+      return next;
+    });
   };
+  const handlePrev = () => setActiveStep((prev) => Math.max(prev - 1, 1));
 
-  // Keyboard navigation: Space, Enter, or ArrowDown advances to the next part
-  useEffect(() => {
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === " " || e.key === "Enter" || e.key === "ArrowDown") {
-        e.preventDefault();
-        handleNextPart();
-      } else if (e.key === "ArrowUp") {
-        e.preventDefault();
-        handlePrevPart();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [handleNextPart, handlePrevPart]);
+  /* DB visible after step-3 is revealed */
+  const dbUnit = content.diagramUnits.find((u) => u.hasDatabaseTop);
+  const isDbRevealed = dbUnit ? maxRevealedStep >= dbUnit.id : false;
+  const isDbActive = dbUnit ? activeStep === dbUnit.id : false;
 
-  // Visual state flags based on currentStep
-  const isFrontendFocus = currentStep === 1 || currentStep === 5;
-  const isRequestFlow = currentStep === 2;
-  const isBackendFocus = currentStep === 3;
-  const isResponseFlow = currentStep === 4;
-  const isCompleted = currentStep === 5;
+  const renderUnitCard = (unitId: number) => {
+    const unit = content.diagramUnits.find((u) => u.id === unitId);
+    if (!unit) return null;
+
+    const isRevealed = unit.id <= maxRevealedStep;
+    const isActive = unit.id === activeStep;
+    const col = UNIT_COLOR[unit.id];
+
+    return (
+      <motion.button
+        key={unit.id}
+        type="button"
+        onClick={() => {
+          setActiveStep(unit.id);
+          setMaxRevealedStep((m) => Math.max(m, unit.id));
+        }}
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{
+          opacity: isRevealed ? 1 : 0.35,
+          scale: isRevealed ? 1 : 0.95,
+        }}
+        transition={{ duration: 0.3 }}
+        className={`relative w-full py-2.5 px-3 rounded-xl border-2 flex flex-col items-center justify-center gap-1.5 transition-all cursor-pointer text-center select-none ${isActive
+          ? `${col.border} ${col.bg} ${col.glow} ring-2 ${col.ring}`
+          : "border-white/10 bg-black/40 hover:border-white/25"
+          }`}
+      >
+        {/* Step badge */}
+        <span
+          className={`absolute top-1.5 right-1.5 text-[8px] font-mono px-1.5 py-0.2 rounded bg-white/10 ${isActive ? col.text : "text-slate-500"
+            }`}
+        >
+          0{unit.id}
+        </span>
+
+        <UnitIcon id={unit.id} className="w-10 h-10" />
+
+        <div className="w-full">
+          <p
+            className={`text-[11px] sm:text-xl font-bold leading-tight truncate ${isActive ? "text-white" : "text-slate-300"
+              }`}
+          >
+            {unit.title}
+          </p>
+          <p
+            className={`text-[9px] md:text-md font-mono mt-0.5 leading-tight truncate max-w-full ${isActive ? col.text : "text-slate-500"
+              }`}
+          >
+            {unit.subtitle}
+          </p>
+        </div>
+      </motion.button>
+    );
+  };
 
   return (
     <section
       aria-label="Frontend vs Backend Communication"
       className={`relative min-h-screen w-full flex flex-col bg-[var(--bg-deep-navy)] overflow-hidden select-none ${className}`}
     >
-      {/* Ambient Dotted Matrix Background */}
+      {/* ── Background ── */}
       <SlideBackground
         theme="indigo"
         slideTag="SLIDE_07 // STEP_BY_STEP_FLOW"
         glowOrbs={[
-          {
-            color: scenario === "login" ? "cyan" : "amber",
-            position: "top-left",
-            size: "w-[36rem] h-[36rem]",
-            opacity: "opacity-20",
-          },
-          {
-            color: "indigo",
-            position: "bottom-right",
-            size: "w-[40rem] h-[40rem]",
-            opacity: "opacity-25",
-          },
-          {
-            color: "amber",
-            position: "center",
-            size: "w-[30rem] h-[20rem]",
-            opacity: "opacity-10",
-          },
+          { color: "indigo", position: "top-left", size: "w-[36rem] h-[36rem]", opacity: "opacity-20" },
+          { color: "cyan", position: "bottom-right", size: "w-[38rem] h-[38rem]", opacity: "opacity-15" },
+          { color: "amber", position: "center", size: "w-[26rem] h-[20rem]", opacity: "opacity-5" },
         ]}
       />
 
-      {/* Slide Header with Scenario Switcher */}
+      {/* ── Slide Header ── */}
       <SlideHeader
-        title="Frontend vs Backend Communication"
-        eyebrow={`Interactive Architecture · ${
-          scenario === "login" ? "Example A: User Login" : "Example B: Add Product"
-        }`}
-        subtitle="Click 'Next Part' to trace how the browser, network, server, and database communicate in real time."
-        slideNumber="Slide 07"
-        accent={scenario === "login" ? "cyan" : "amber"}
-        rightContent={
-          <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-black/50 border border-white/10 backdrop-blur-md shadow-lg">
-            <button
-              type="button"
-              onClick={() => handleSwitchScenario("login")}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
-                scenario === "login"
-                  ? "bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-[0_0_15px_rgba(6,182,212,0.6)]"
-                  : "text-slate-400 hover:text-white"
-              }`}
-            >
-              <Lock className="w-3.5 h-3.5" />
-              <span>Ex 1: User Login</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => handleSwitchScenario("product")}
-              className={`flex items-center gap-1.5 px-3 py-1 rounded-xl text-xs font-mono font-bold transition-all cursor-pointer ${
-                scenario === "product"
-                  ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-[0_0_15px_rgba(16,185,129,0.6)]"
-                  : "text-slate-400 hover:text-white"
-              }`}
-            >
-              <ShoppingBag className="w-3.5 h-3.5" />
-              <span>Ex 2: Add Product</span>
-            </button>
-          </div>
-        }
+        title={content.title}
+        eyebrow={content.eyebrow}
+        slideNumber={content.badge}
+        accent="indigo"
       />
 
-      {/* Main Slide Workspace */}
-      <div className="relative z-10 flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 py-2.5 flex flex-col justify-between gap-3 min-h-0">
-        {/* ── TOP INTERACTIVE STEP NAVIGATION PILLS ── */}
-        <div className="w-full flex items-center justify-between gap-2 p-2 rounded-2xl bg-[#0F172A]/80 border border-white/10 backdrop-blur-md shadow-lg overflow-x-auto">
-          <div className="flex items-center gap-1.5 sm:gap-2">
-            {steps.map((s) => {
-              const isCurrent = currentStep === s.step;
-              const isPast = currentStep > s.step;
-              return (
-                <button
-                  key={s.step}
-                  type="button"
-                  onClick={() => setCurrentStep(s.step)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-mono font-bold transition-all flex items-center gap-1.5 cursor-pointer whitespace-nowrap ${
-                    isCurrent
-                      ? scenario === "login"
-                        ? "bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-[0_0_18px_rgba(6,182,212,0.6)] scale-105"
-                        : "bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-[0_0_18px_rgba(16,185,129,0.6)] scale-105"
-                      : isPast
-                      ? "bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
-                      : "bg-white/5 text-slate-400 hover:text-white border border-white/5 opacity-60"
-                  }`}
-                >
-                  {isPast ? (
-                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  ) : (
-                    <span
-                      className={`w-2 h-2 rounded-full ${
-                        isCurrent
-                          ? scenario === "login"
-                            ? "bg-cyan-300 animate-ping"
-                            : "bg-emerald-300 animate-ping"
-                          : "bg-slate-500"
-                      }`}
-                    />
-                  )}
-                  <span>Part {s.step}</span>
-                </button>
-              );
-            })}
-          </div>
+      {/* ══════════════════════════════════════════════════════════
+          MAIN  ─  two columns:  [Login Prototype]  |  [Backend]
+          ══════════════════════════════════════════════════════════ */}
+      <div className="relative z-10 flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 md:px-8 pb-6 flex items-stretch gap-6 min-h-0">
 
-          {/* Active Step Explainer Banner */}
-          <div className="hidden md:flex items-center gap-2 px-3 py-1 rounded-xl bg-white/5 border border-white/10 text-xs font-mono">
-            <span
-              className={`font-bold ${
-                scenario === "login" ? "text-cyan-400" : "text-emerald-400"
-              }`}
-            >
-              {activeInfo.badge}:
-            </span>
-            <span className="text-slate-200">{activeInfo.title}</span>
-          </div>
-        </div>
+        {/* ════════════════════════════════════════
+            LEFT  ─  Login page prototype (bigger)
+            ════════════════════════════════════════ */}
+        <div className="flex w-[280px] sm:w-[310px] flex flex-col items-center justify-center pt-4">
+          {/* Browser chrome */}
+          <div className="rounded-2xl h-[70%] border border-slate-700/70 overflow-hidden shadow-[0_12px_48px_rgba(0,0,0,0.65)] flex flex-col bg-[#0A0F1D]">
 
-        {/* ── THE 3 INTERACTIVE PILLARS (FRONTEND ➔ ARROWS ➔ BACKEND) ── */}
-        <div className="flex-1 w-full grid grid-cols-1 lg:grid-cols-[1fr_1.15fr_1fr] gap-4 lg:gap-5 items-stretch min-h-0 py-1">
-          {/* ══════════════════════════════════════════════════════════
-              PILLAR 1: THE FRONTEND (CLIENT / BROWSER)
-              ══════════════════════════════════════════════════════════ */}
-          <motion.div
-            animate={{
-              scale: isFrontendFocus ? 1.02 : 0.98,
-              opacity: isFrontendFocus || currentStep > 1 ? 1 : 0.45,
-              borderColor: isCompleted
-                ? "rgba(16, 185, 129, 0.8)"
-                : isFrontendFocus
-                ? scenario === "login"
-                  ? "rgba(6, 182, 212, 0.85)"
-                  : "rgba(16, 185, 129, 0.85)"
-                : "rgba(255, 255, 255, 0.1)",
-            }}
-            transition={{ duration: 0.35 }}
-            className={`relative rounded-3xl p-5 sm:p-6 bg-[#0B1120]/95 border-2 flex flex-col justify-between shadow-2xl backdrop-blur-xl overflow-hidden transition-all ${
-              isCompleted
-                ? "shadow-[0_0_40px_rgba(16,185,129,0.3)] ring-2 ring-emerald-400/40"
-                : isFrontendFocus
-                ? scenario === "login"
-                  ? "shadow-[0_0_40px_rgba(6,182,212,0.35)] ring-2 ring-cyan-400/40"
-                  : "shadow-[0_0_40px_rgba(16,185,129,0.35)] ring-2 ring-emerald-400/40"
-                : ""
-            }`}
-          >
-            {/* Top Glow Accent Line */}
-            <div
-              className={`absolute top-0 inset-x-8 h-1 bg-gradient-to-r from-transparent ${
-                isCompleted
-                  ? "via-emerald-400"
-                  : isFrontendFocus
-                  ? scenario === "login"
-                    ? "via-[var(--accent-cyan)]"
-                    : "via-emerald-400"
-                  : "via-white/20"
-              } to-transparent`}
-            />
+            {/* Toolbar */}
+            <div className="bg-[#111827] border-b border-slate-800 px-3 py-2 flex items-center gap-2 shrink-0">
+              <div className="flex gap-1.5">
+                <span className="w-3 h-3 rounded-full bg-rose-500/70" />
+                <span className="w-3 h-3 rounded-full bg-amber-500/70" />
+                <span className="w-3 h-3 rounded-full bg-emerald-500/70" />
+              </div>
+              <div className="flex-1 flex items-center gap-1.5 px-2 py-1 rounded-md bg-[#1E293B] border border-slate-700/50 text-[11px] font-mono text-slate-400">
+                <Lock className="w-3 h-3 text-emerald-400 shrink-0" />
+                <span className="truncate text-slate-300">devup-club.dz/login</span>
+              </div>
+            </div>
 
-            <div>
-              {/* Header Badge */}
-              <div className="flex items-center justify-between mb-3">
-                <span
-                  className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider uppercase ${
-                    scenario === "login"
-                      ? "bg-cyan-500/15 border border-cyan-500/30 text-cyan-300"
-                      : "bg-emerald-500/15 border border-emerald-500/30 text-emerald-300"
-                  }`}
-                >
-                  <Laptop className="w-4 h-4" />
-                  Frontend (Client)
-                </span>
-                <span className="text-[11px] font-mono text-slate-400">
-                  Browser / Screen
-                </span>
+            {/* Page body */}
+            <div className="flex-1 p-6 flex flex-col items-center gap-4 bg-gradient-to-b from-[#0B1120] to-[#060D18]">
+              {/* Logo */}
+              <div className="flex flex-col items-center gap-1.5">
+                <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-cyan-500 flex items-center justify-center shadow-[0_0_24px_rgba(99,102,241,0.55)]">
+                  <span className="text-white font-black text-xl">D</span>
+                </div>
+                <span className="text-white text-sm font-bold tracking-wide">DevUp Club</span>
+                <span className="text-slate-400 text-[11px] font-mono">Sign in to your account</span>
               </div>
 
-              {/* Title & Description */}
-              <h3 className="text-xl font-extrabold text-white tracking-tight mb-1.5">
-                What the User Sees
-              </h3>
-              <p className="text-xs sm:text-[13px] text-slate-300 leading-relaxed mb-3.5">
-                {scenario === "login"
-                  ? "The visual screen running in Chrome or Safari. It collects user credentials and displays responses."
-                  : "The store management dashboard. The merchant enters product info and publishes it live to the storefront."}
-              </p>
-
-              {/* Visual Form Mockup */}
-              <div className="p-3.5 rounded-2xl bg-black/50 border border-white/10 space-y-2.5 shadow-inner">
-                {scenario === "login" ? (
-                  /* ── SCENARIO A: LOGIN FORM ── */
-                  <>
-                    <div className="flex items-center justify-between text-[11px] font-mono font-semibold uppercase text-slate-400">
-                      <span>DevUp Club Portal</span>
-                      <span className="text-cyan-400">Form Inputs</span>
+              {/* Form */}
+              <div className="w-full flex flex-col gap-3">
+                {/* Email */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-mono text-slate-400">Email address</label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
+                    <div className="pl-8 pr-3 py-2.5 rounded-xl bg-[#1E293B] border border-slate-700/70 text-[12px] font-mono text-cyan-300">
+                      mohamed@devup-club.dz
                     </div>
+                  </div>
+                </div>
 
-                    {/* Email Field */}
-                    <div className="p-2 rounded-xl bg-white/[0.04] border border-white/10 flex items-center gap-2">
-                      <User className="w-4 h-4 text-cyan-400 shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <div className="text-[9px] font-mono text-slate-400 uppercase">
-                          Email Address
-                        </div>
-                        <div className="text-xs font-mono font-bold text-white truncate">
-                          mohamed@devup-club.dz
-                        </div>
-                      </div>
+                {/* Password */}
+                <div className="flex flex-col gap-1">
+                  <label className="text-[11px] font-mono text-slate-400">Password</label>
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500" />
+                    <div className="pl-8 pr-9 py-2.5 rounded-xl bg-[#1E293B] border border-slate-700/70 text-[12px] font-mono text-slate-300">
+                      {showPassword ? "workshop2026" : "••••••••••••"}
                     </div>
-
-                    {/* Password Field */}
-                    <div className="p-2 rounded-xl bg-white/[0.04] border border-white/10 flex items-center gap-2">
-                      <KeyRound className="w-4 h-4 text-amber-400 shrink-0" />
-                      <div className="flex-1 min-w-0">
-                        <div className="text-[9px] font-mono text-slate-400 uppercase">
-                          Password
-                        </div>
-                        <div className="text-xs font-mono tracking-widest text-slate-200">
-                          ••••••••••••
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Login Action Button */}
                     <button
                       type="button"
-                      onClick={handleNextPart}
-                      className={`w-full py-2.5 px-3 rounded-xl font-mono text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer ${
-                        isCompleted
-                          ? "bg-emerald-600 text-white shadow-[0_0_20px_rgba(16,185,129,0.5)]"
-                          : currentStep === 1
-                          ? "bg-gradient-to-r from-cyan-500 to-indigo-600 text-white shadow-[0_0_20px_rgba(6,182,212,0.6)] animate-pulse"
-                          : "bg-white/10 text-slate-300"
-                      }`}
+                      onClick={() => setShowPassword((v) => !v)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300 cursor-pointer"
                     >
-                      {isCompleted ? (
-                        <>
-                          <CheckCircle2 className="w-4 h-4 text-white" />
-                          <span>Authenticated! Welcome Mohamed</span>
-                        </>
-                      ) : currentStep === 1 ? (
-                        <>
-                          <Sparkles className="w-4 h-4" />
-                          <span>Click to Submit Credentials</span>
-                        </>
-                      ) : (
-                        <span>Credentials Submitted ✓</span>
-                      )}
+                      {showPassword ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
                     </button>
-                  </>
-                ) : (
-                  /* ── SCENARIO B: ADD PRODUCT FORM ── */
-                  <>
-                    <div className="flex items-center justify-between text-[11px] font-mono font-semibold uppercase text-slate-400">
-                      <span>E-Commerce Admin</span>
-                      <span className="text-emerald-400">New Product</span>
-                    </div>
-
-                    {!isCompleted ? (
-                      /* Product Input Form */
-                      <div className="space-y-2">
-                        {/* Title Field */}
-                        <div className="p-2 rounded-xl bg-white/[0.04] border border-white/10 flex items-center gap-2">
-                          <Package className="w-4 h-4 text-emerald-400 shrink-0" />
-                          <div className="flex-1 min-w-0">
-                            <div className="text-[9px] font-mono text-slate-400 uppercase">
-                              Product Name
-                            </div>
-                            <div className="text-xs font-mono font-bold text-white truncate">
-                              AirPods Pro Max (Wireless)
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Price & Stock Grid */}
-                        <div className="grid grid-cols-2 gap-2">
-                          <div className="p-1.5 rounded-xl bg-white/[0.04] border border-white/10 flex items-center gap-1.5">
-                            <DollarSign className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                            <div className="min-w-0">
-                              <div className="text-[8px] font-mono text-slate-400 uppercase">
-                                Price
-                              </div>
-                              <div className="text-xs font-mono font-bold text-white">
-                                $249.00
-                              </div>
-                            </div>
-                          </div>
-
-                          <div className="p-1.5 rounded-xl bg-white/[0.04] border border-white/10 flex items-center gap-1.5">
-                            <Layers className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-                            <div className="min-w-0">
-                              <div className="text-[8px] font-mono text-slate-400 uppercase">
-                                Initial Stock
-                              </div>
-                              <div className="text-xs font-mono font-bold text-white">
-                                45 units
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Publish Button */}
-                        <button
-                          type="button"
-                          onClick={handleNextPart}
-                          className={`w-full py-2.5 px-3 rounded-xl font-mono text-xs font-bold transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer ${
-                            currentStep === 1
-                              ? "bg-gradient-to-r from-emerald-500 to-cyan-500 text-white shadow-[0_0_20px_rgba(16,185,129,0.6)] animate-pulse"
-                              : "bg-white/10 text-slate-300"
-                          }`}
-                        >
-                          <ShoppingBag className="w-4 h-4" />
-                          <span>
-                            {currentStep === 1
-                              ? "Click to Publish Product"
-                              : "Product Dispatched ✓"}
-                          </span>
-                        </button>
-                      </div>
-                    ) : (
-                      /* Published Live Product Card */
-                      <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/50 space-y-2">
-                        <div className="flex items-center justify-between text-xs font-mono">
-                          <span className="text-emerald-300 font-bold flex items-center gap-1">
-                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                            <span>Live on Storefront!</span>
-                          </span>
-                          <span className="text-[10px] text-cyan-300 font-bold bg-cyan-500/20 px-2 py-0.5 rounded">
-                            ID: #PRD-942
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between pt-1">
-                          <div>
-                            <h5 className="text-xs font-bold text-white">
-                              AirPods Pro Max (Wireless)
-                            </h5>
-                            <span className="text-[10px] font-mono text-slate-300">
-                              45 units available in warehouse
-                            </span>
-                          </div>
-                          <span className="text-base font-extrabold text-emerald-400 font-mono">
-                            $249.00
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </>
-                )}
-              </div>
-            </div>
-
-            {/* Teaching Bullets */}
-            <div className="mt-3 pt-3 border-t border-white/10 space-y-1 text-xs text-slate-300 font-mono">
-              <div className="flex items-center gap-2">
-                <span
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    scenario === "login" ? "bg-cyan-400" : "bg-emerald-400"
-                  }`}
-                />
-                <span>Runs on user&apos;s phone or computer</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span
-                  className={`w-1.5 h-1.5 rounded-full ${
-                    scenario === "login" ? "bg-cyan-400" : "bg-emerald-400"
-                  }`}
-                />
-                <span>Built with HTML, CSS, React / Next.js</span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* ══════════════════════════════════════════════════════════
-              PILLAR 2 (MIDDLE): THE NETWORK & ANIMATED ARROWS
-              ══════════════════════════════════════════════════════════ */}
-          <div className="flex flex-col justify-center gap-3.5 relative py-1">
-            {/* Network Badge */}
-            <div className="text-center">
-              <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 border border-white/10 text-[11px] font-mono text-slate-300 shadow-md">
-                <Globe className="w-3.5 h-3.5 text-cyan-400" />
-                <span>The Internet Pipeline (HTTPS)</span>
-              </span>
-            </div>
-
-            {/* 1. ARROW GOING FORWARD (REQUEST) */}
-            <motion.div
-              animate={{
-                scale: isRequestFlow ? 1.04 : 0.98,
-                opacity: isRequestFlow || currentStep > 2 ? 1 : 0.35,
-                borderColor: isRequestFlow
-                  ? scenario === "login"
-                    ? "rgba(6, 182, 212, 0.9)"
-                    : "rgba(16, 185, 129, 0.9)"
-                  : "rgba(255, 255, 255, 0.1)",
-              }}
-              transition={{ duration: 0.35 }}
-              className={`relative rounded-2xl p-4 bg-[#0A1222] border-2 shadow-xl flex flex-col gap-2 transition-all overflow-hidden ${
-                isRequestFlow
-                  ? "shadow-[0_0_35px_rgba(6,182,212,0.45)] ring-2 ring-cyan-400/50"
-                  : ""
-              }`}
-            >
-              <div className="flex items-center justify-between text-xs font-mono">
-                <span className="font-bold text-cyan-300 flex items-center gap-1.5">
-                  <span
-                    className={`w-2 h-2 rounded-full ${
-                      isRequestFlow ? "bg-cyan-400 animate-ping" : "bg-cyan-400"
-                    }`}
-                  />
-                  1. Request (The Question / Order)
-                </span>
-                <span className="text-[10px] text-slate-400 uppercase">
-                  Frontend ➔ Backend
-                </span>
-              </div>
-
-              {/* Message Bubble */}
-              <div className="p-2.5 rounded-xl bg-cyan-950/40 border border-cyan-500/30 text-xs sm:text-[13px] text-cyan-100 font-medium leading-relaxed">
-                {scenario === "login"
-                  ? "“Hey Server! Here is Mohamed's email and password. Can he log in?”"
-                  : "“Hey Server! Please add 'AirPods Pro Max' ($249.00, stock: 45) to our product catalog.”"}
-              </div>
-
-              {/* The Arrow Track with Moving Particle */}
-              <div className="relative h-9 rounded-xl bg-black/60 border border-cyan-500/30 flex items-center px-3 overflow-hidden">
-                <div className="absolute inset-x-3 top-1/2 -translate-y-1/2 h-0.5 border-t-2 border-dashed border-cyan-500/40" />
-
-                {isRequestFlow && (
-                  <motion.div
-                    initial={{ left: "5%" }}
-                    animate={{ left: "85%" }}
-                    transition={{
-                      duration: 1.2,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                    className={`absolute z-20 flex items-center gap-1.5 px-3 py-1 rounded-lg text-white text-xs font-mono font-bold shadow-lg ${
-                      scenario === "login"
-                        ? "bg-gradient-to-r from-cyan-500 to-indigo-600 shadow-[0_0_20px_rgba(6,182,212,0.9)]"
-                        : "bg-gradient-to-r from-emerald-500 to-cyan-500 shadow-[0_0_20px_rgba(16,185,129,0.9)]"
-                    }`}
-                  >
-                    <Zap className="w-3.5 h-3.5 text-amber-300 animate-bounce" />
-                    <span>
-                      {scenario === "login" ? "Credentials" : "Product JSON"}
-                    </span>
-                  </motion.div>
-                )}
-
-                <div className="relative z-10 w-full flex items-center justify-between text-xs font-mono text-slate-300">
-                  <span className="font-semibold text-cyan-400">
-                    {scenario === "login"
-                      ? "POST /api/v1/auth/login"
-                      : "POST /api/v1/products"}
-                  </span>
-                  <div className="flex items-center gap-1 text-cyan-400 font-bold">
-                    <span>Sending</span>
-                    <ArrowRight className="w-4 h-4 animate-pulse stroke-[3]" />
                   </div>
                 </div>
-              </div>
-            </motion.div>
 
-            {/* 2. ARROW GOING BACK (RESPONSE) */}
-            <motion.div
-              animate={{
-                scale: isResponseFlow ? 1.04 : 0.98,
-                opacity: isResponseFlow || currentStep > 4 ? 1 : 0.35,
-                borderColor: isResponseFlow
-                  ? "rgba(16, 185, 129, 0.9)"
-                  : "rgba(255, 255, 255, 0.1)",
-              }}
-              transition={{ duration: 0.35 }}
-              className={`relative rounded-2xl p-4 bg-[#0A1222] border-2 shadow-xl flex flex-col gap-2 transition-all overflow-hidden ${
-                isResponseFlow
-                  ? "shadow-[0_0_35px_rgba(16,185,129,0.45)] ring-2 ring-emerald-400/50"
-                  : ""
-              }`}
-            >
-              <div className="flex items-center justify-between text-xs font-mono">
-                <span className="font-bold text-emerald-300 flex items-center gap-1.5">
-                  <span
-                    className={`w-2 h-2 rounded-full ${
-                      isResponseFlow
-                        ? "bg-emerald-400 animate-ping"
-                        : "bg-emerald-400"
-                    }`}
-                  />
-                  2. Response (The Answer)
-                </span>
-                <span className="text-[10px] text-slate-400 uppercase">
-                  Backend ➔ Frontend
-                </span>
+                {/* Submit */}
+                <button
+                  type="button"
+                  className="mt-1 w-full py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-600 text-white text-sm font-bold font-mono flex items-center justify-center gap-2 shadow-[0_0_22px_rgba(99,102,241,0.45)] cursor-pointer hover:from-indigo-500 hover:to-cyan-500 transition-all"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Sign In
+                </button>
               </div>
 
-              {/* Message Bubble */}
-              <div className="p-2.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs sm:text-[13px] text-emerald-100 font-medium leading-relaxed">
-                {scenario === "login"
-                  ? "“Yes! Password matches. Here is the session token, welcome in!”"
-                  : "“Success! Product recorded in database with ID #PRD-942 and active URL.”"}
-              </div>
-
-              {/* The Return Arrow Track with Moving Particle */}
-              <div className="relative h-9 rounded-xl bg-black/60 border border-emerald-500/30 flex items-center px-3 overflow-hidden">
-                <div className="absolute inset-x-3 top-1/2 -translate-y-1/2 h-0.5 border-t-2 border-dashed border-emerald-500/40" />
-
-                {isResponseFlow && (
-                  <motion.div
-                    initial={{ right: "5%" }}
-                    animate={{ right: "85%" }}
-                    transition={{
-                      duration: 1.2,
-                      repeat: Infinity,
-                      ease: "linear",
-                    }}
-                    className="absolute z-20 flex items-center gap-1.5 px-3 py-1 rounded-lg bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-xs font-mono font-bold shadow-[0_0_20px_rgba(16,185,129,0.9)]"
-                  >
-                    <CheckCircle2 className="w-3.5 h-3.5 text-white" />
-                    <span>
-                      {scenario === "login"
-                        ? "200 OK Token"
-                        : "201 Created #PRD-942"}
-                    </span>
-                  </motion.div>
-                )}
-
-                <div className="relative z-10 w-full flex items-center justify-between text-xs font-mono text-slate-300">
-                  <div className="flex items-center gap-1 text-emerald-400 font-bold">
-                    <ArrowLeft className="w-4 h-4 animate-pulse stroke-[3]" />
-                    <span>Returning</span>
-                  </div>
-                  <span className="font-semibold text-emerald-400">
-                    {scenario === "login" ? "200 Success" : "201 Created"}
-                  </span>
+              {/* Payload badge */}
+              <div className="w-full mt-auto pt-3 border-t border-slate-800">
+                <div className="p-2 rounded-xl bg-[#111827] border border-indigo-500/30 text-[11px] font-mono text-slate-400">
+                  <span className="text-indigo-400 font-bold">POST</span>
+                  <span className="text-slate-500"> → body: </span>
+                  <span className="text-cyan-300">{"{ email, password }"}</span>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
 
-          {/* ══════════════════════════════════════════════════════════
-              PILLAR 3: THE BACKEND & DATABASE (SERVER)
-              ══════════════════════════════════════════════════════════ */}
-          <motion.div
-            animate={{
-              scale: isBackendFocus ? 1.02 : 0.98,
-              opacity: isBackendFocus || currentStep > 3 ? 1 : 0.45,
-              borderColor: isBackendFocus
-                ? "rgba(99, 102, 241, 0.9)"
-                : "rgba(255, 255, 255, 0.1)",
-            }}
-            transition={{ duration: 0.35 }}
-            className={`relative rounded-3xl p-5 sm:p-6 bg-[#0B1120]/95 border-2 flex flex-col justify-between shadow-2xl backdrop-blur-xl overflow-hidden transition-all ${
-              isBackendFocus
-                ? "shadow-[0_0_40px_rgba(99,102,241,0.35)] ring-2 ring-indigo-400/40"
-                : ""
-            }`}
-          >
-            {/* Top Glow Accent Line */}
-            <div className="absolute top-0 inset-x-8 h-1 bg-gradient-to-r from-transparent via-[var(--action-indigo)] to-transparent" />
-
-            <div>
-              {/* Header Badge */}
-              <div className="flex items-center justify-between mb-3">
-                <span className="flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-bold tracking-wider uppercase bg-indigo-500/15 border border-indigo-500/30 text-indigo-300">
-                  <Server className="w-4 h-4 text-indigo-400" />
-                  Backend (Server)
-                </span>
-                <span className="text-[11px] font-mono text-slate-400">
-                  Cloud / Data Center
-                </span>
-              </div>
-
-              {/* Title & Description */}
-              <h3 className="text-xl font-extrabold text-white tracking-tight mb-1.5">
-                Behind the Scenes
-              </h3>
-              <p className="text-xs sm:text-[13px] text-slate-300 leading-relaxed mb-4">
-                The server is the brain and memory. It protects your secrets, verifies business logic, and writes safely to the database.
-              </p>
-
-              {/* 2 Clean Visual Sub-Blocks */}
-              <div className="space-y-2.5">
-                {/* 1. Server Brain Block */}
-                <div
-                  className={`p-3 rounded-2xl border transition-all ${
-                    isBackendFocus
-                      ? "bg-indigo-950/60 border-indigo-500/60 shadow-[0_0_20px_rgba(99,102,241,0.3)]"
-                      : "bg-black/40 border-white/10"
-                  }`}
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="p-1.5 rounded-lg bg-indigo-500/20 text-indigo-400">
-                      <ShieldCheck className="w-4 h-4" />
-                    </div>
-                    <span className="text-xs font-bold font-mono text-white">
-                      1. Server (The Brain)
-                    </span>
-                    {isBackendFocus && (
-                      <span className="ml-auto text-[10px] font-mono text-indigo-300 bg-indigo-500/20 px-2 py-0.5 rounded-md animate-pulse font-bold">
-                        {scenario === "login" ? "Checking Auth..." : "Validating Schema..."}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    {scenario === "login"
-                      ? "Receives email & password. Verifies format and applies security checks."
-                      : "Checks price ($249 > 0), verifies stock is valid, and authorizes admin merchant permissions."}
-                  </p>
-                </div>
-
-                {/* 2. Database Memory Block */}
-                <div
-                  className={`p-3 rounded-2xl border transition-all ${
-                    isBackendFocus
-                      ? "bg-amber-950/50 border-amber-500/60 shadow-[0_0_20px_rgba(245,158,11,0.25)]"
-                      : "bg-black/40 border-white/10"
-                  }`}
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <div className="p-1.5 rounded-lg bg-amber-500/20 text-amber-400">
-                      <Database className="w-4 h-4 animate-pulse" />
-                    </div>
-                    <span className="text-xs font-bold font-mono text-white">
-                      2. Database (The Memory)
-                    </span>
-                    {isBackendFocus && (
-                      <span className="ml-auto text-[10px] font-mono text-amber-300 bg-amber-500/20 px-2 py-0.5 rounded-md font-bold">
-                        {scenario === "login" ? "User Verified! ✓" : "Row Inserted! ✓"}
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-xs text-slate-300 leading-relaxed">
-                    {scenario === "login"
-                      ? "“Does Mohamed exist? Yes. Does the password match? Yes!”"
-                      : "INSERT INTO products (name, price, stock) VALUES ('AirPods Pro Max', 249, 45) -> Created ID #PRD-942."}
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Teaching Bullets */}
-            <div className="mt-3 pt-3 border-t border-white/10 space-y-1 text-xs text-slate-300 font-mono">
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-indigo-400" />
-                <span>Runs securely on a remote cloud server</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                <span>Stores data safely in a permanent database</span>
-              </div>
-            </div>
-          </motion.div>
+          <div className="mt-2 text-center">
+            <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">Client · Browser</span>
+          </div>
         </div>
 
-        {/* ══════════════════════════════════════════════════════════
-            BOTTOM PRESENTATION CONTROLLER: BIG "CLICK NEXT" BAR
-            ══════════════════════════════════════════════════════════ */}
-        <div className="p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-[#0F172A]/90 via-[#1E293B]/90 to-[#0F172A]/90 border-2 border-cyan-500/30 backdrop-blur-xl shadow-2xl flex flex-col sm:flex-row items-center justify-between gap-3">
-          {/* Left: Step Explainer Description */}
-          <div className="flex items-center gap-3 text-left">
-            <div
-              className={`w-10 h-10 rounded-xl border flex items-center justify-center shrink-0 font-mono font-bold text-sm ${
-                scenario === "login"
-                  ? "bg-gradient-to-br from-cyan-500/20 to-indigo-500/20 border-cyan-500/30 text-cyan-300"
-                  : "bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 border-emerald-500/30 text-emerald-300"
-              }`}
-            >
-              {currentStep}/5
+        {/* ════════════════════════════════════════
+            CENTER  ─  HTTP arrows connector
+            ════════════════════════════════════════ */}
+        <div className="flex-shrink-0 flex flex-col items-center justify-center gap-5 w-16 sm:w-20">
+          {/* Request → */}
+          <div className="flex flex-col items-center gap-1">
+            <div className="flex items-center">
+              <div className="w-8 h-0.5 bg-gradient-to-r from-indigo-500 to-cyan-400" />
+              <ArrowRight className="w-3.5 h-3.5 text-cyan-400 -ml-1" />
             </div>
-            <div>
-              <div
-                className={`text-[11px] font-mono uppercase font-bold tracking-wider ${
-                  scenario === "login" ? "text-cyan-400" : "text-emerald-400"
-                }`}
+            <span className="text-[9px] font-mono font-bold text-indigo-300 whitespace-nowrap bg-indigo-500/15 border border-indigo-500/30 px-2 py-0.5 rounded-md">
+              HTTP Request
+            </span>
+            <span className="text-[9px] font-mono text-slate-500 whitespace-nowrap">POST /auth/login</span>
+          </div>
+
+          {/* ← Response */}
+          <div className="flex flex-col items-center gap-1">
+            <div className="flex items-center">
+              <ArrowLeft className="w-3.5 h-3.5 text-emerald-400 -mr-1" />
+              <div className="w-8 h-0.5 bg-gradient-to-l from-emerald-500 to-cyan-500" />
+            </div>
+            <span className="text-[9px] font-mono font-bold text-emerald-300 whitespace-nowrap bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 rounded-md">
+              HTTP Response
+            </span>
+            <span className="text-[9px] font-mono text-slate-500 whitespace-nowrap">200 OK + Cookie</span>
+          </div>
+        </div>
+
+        {/* ════════════════════════════════════════
+            RIGHT  ─  Backend frame + DB below
+            ════════════════════════════════════════ */}
+        <div className="flex-1 min-w-0 flex flex-col justify-center pt-4 gap-3">
+          <div className="h-[70%] relative">
+
+            <div className="text-center -top-8 left-4 absolute">
+              <span className="text-[10px] font-mono text-slate-500 uppercase tracking-wider">
+                Server · Node.js · Express
+              </span>
+            </div>
+            {/* ── Backend Frame ── */}
+            <div className="relative h-full rounded-2xl border-2 border-indigo-500/40 bg-[#0B1120]/95 backdrop-blur-xl shadow-[0_0_60px_rgba(99,102,241,0.15)] flex flex-col overflow-hidden">
+              {/* Header: simple — title + endpoint */}
+              <div className="px-5 py-3 bg-[#0F172A]/90 border-b border-indigo-500/20 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-3">
+                  <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-sm font-mono font-bold text-white tracking-wide">Login Feature</span>
+                </div>
+                <div className="flex items-center gap-2 text-xs font-mono">
+                  <span className="text-indigo-400 font-bold">{content.backend.method}</span>
+                  <span className="text-cyan-300 font-semibold">{content.backend.endpoint}</span>
+                </div>
+              </div>
+
+              {/* 2×2 units with connecting flow arrows */}
+              <div className="flex-1 p-3 sm:p-4 flex flex-col justify-between min-h-0">
+                {/* TOP ROW: [Unit 1: Receive Input]  ──→  [Unit 2: Input Validation] */}
+                <div className="flex items-center h-[40%] justify-between gap-2 sm:gap-3">
+                  <div className="w-[160px] sm:w-[40%] h-full flex justify-center">
+                    {renderUnitCard(1)}
+                  </div>
+
+                  {/* Arrow 1 → 2 (Top horizontal arrow) */}
+                  <div className="flex-1 flex items-center justify-center px-1">
+                    <motion.div
+                      animate={{
+                        opacity: maxRevealedStep >= 2 ? 1 : 0.25,
+                        scale: maxRevealedStep >= 2 ? 1 : 0.9,
+                      }}
+                      transition={{ duration: 0.3 }}
+                      className="flex items-center w-full justify-center text-amber-400"
+                    >
+                      <div className="flex-1 h-0.5 max-w-[70px] sm:max-w-[90px] bg-gradient-to-r from-cyan-400 to-amber-400" />
+                      <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 -ml-1 text-amber-400 shrink-0" />
+                    </motion.div>
+                  </div>
+
+                  <div className="w-[160px] sm:w-[40%] h-full flex justify-center">
+                    {renderUnitCard(2)}
+                  </div>
+                </div>
+
+                {/* MIDDLE ROW: Vertical Arrow (Unit 2 ↓ Unit 3) */}
+                <div className="flex items-center justify-between px-2 sm:px-4 py-0.5 sm:py-1">
+                  {/* Left empty balance column */}
+                  <div className="w-[160px] sm:w-[190px] shrink-0" />
+
+                  {/* Middle empty spacer */}
+                  <div className="flex-1" />
+
+                  {/* Right vertical arrow aligned directly between Unit 2 and Unit 3 */}
+                  <div className="w-[160px] sm:w-[190px] shrink-0 flex justify-center">
+                    <motion.div
+                      animate={{
+                        opacity: maxRevealedStep >= 3 ? 1 : 0.25,
+                        scale: maxRevealedStep >= 3 ? 1 : 0.9,
+                      }}
+                      transition={{ duration: 0.3 }}
+                      className="flex flex-col items-center text-indigo-400 py-0.5"
+                    >
+                      <div className="w-0.5 h-4 sm:h-7 bg-gradient-to-b from-amber-400 to-indigo-400" />
+                      <ArrowDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 -mt-1 text-indigo-400 shrink-0" />
+                    </motion.div>
+                  </div>
+                </div>
+
+                {/* BOTTOM ROW: [Unit 4: Return Response]  ←──  [Unit 3: Check into DB] */}
+                <div className="flex items-center justify-between h-[40%] gap-2 sm:gap-3">
+                  <div className="w-[160px] sm:w-[40%] h-full flex justify-center">
+                    {renderUnitCard(4)}
+                  </div>
+
+                  {/* Arrow 3 → 4 (Bottom horizontal arrow pointing LEFT: from Unit 3 to Unit 4) */}
+                  <div className="flex-1 flex items-center justify-center px-1">
+                    <motion.div
+                      animate={{
+                        opacity: maxRevealedStep >= 4 ? 1 : 0.25,
+                        scale: maxRevealedStep >= 4 ? 1 : 0.9,
+                      }}
+                      transition={{ duration: 0.3 }}
+                      className="flex items-center w-full justify-center text-emerald-400"
+                    >
+                      <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4 -mr-1 text-emerald-400 shrink-0" />
+                      <div className="flex-1 h-0.5 max-w-[70px] sm:max-w-[90px] bg-gradient-to-l from-indigo-400 to-emerald-400" />
+                    </motion.div>
+                  </div>
+
+                  <div className="w-[160px] sm:w-[40%] h-full flex justify-center">
+                    {renderUnitCard(3)}
+                  </div>
+                </div>
+              </div>
+
+              {/* Footer: Prev / Next stepper */}
+              <div className="px-5 py-2.5 bg-[#0F172A]/90 border-t border-white/5 flex items-center justify-between shrink-0">
+                <button
+                  type="button"
+                  onClick={handlePrev}
+                  disabled={activeStep <= 1}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all text-xs font-mono cursor-pointer"
+                >
+                  <ArrowLeft className="w-3 h-3" />
+                  Prev
+                </button>
+
+                <span className="text-[11px] font-mono text-slate-400">
+                  Step {activeStep} / {content.diagramUnits.length}
+                </span>
+
+                <motion.button
+                  type="button"
+                  onClick={handleNext}
+                  animate={
+                    isAllUnitsCompleted
+                      ? {
+                        scale: [1, 1.05, 1],
+                        boxShadow: [
+                          "0 0 14px rgba(99,102,241,0.4)",
+                          "0 0 25px rgba(6,182,212,0.8)",
+                          "0 0 14px rgba(99,102,241,0.4)",
+                        ],
+                      }
+                      : {}
+                  }
+                  transition={
+                    isAllUnitsCompleted
+                      ? { duration: 1.8, repeat: Infinity, ease: "easeInOut" }
+                      : undefined
+                  }
+                  title={isAllUnitsCompleted ? "Zoom out to Slide 08: The Internet" : "Next diagram unit"}
+                  className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg font-mono text-xs font-bold transition-all cursor-pointer ${isAllUnitsCompleted
+                      ? "bg-gradient-to-r from-cyan-500 via-indigo-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white ring-2 ring-cyan-300/60 shadow-[0_0_20px_rgba(6,182,212,0.6)]"
+                      : "bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white shadow-[0_0_14px_rgba(99,102,241,0.4)]"
+                    }`}
+                >
+                  {isAllUnitsCompleted ? (
+                    <>
+                      <span>The Internet</span>
+                      <ZoomOut className="w-3.5 h-3.5 text-cyan-200 animate-pulse" />
+                    </>
+                  ) : (
+                    <>
+                      <span>Next</span>
+                      <ArrowRight className="w-3 h-3" />
+                    </>
+                  )}
+                </motion.button>
+              </div>
+            </div>
+          </div>
+          {/* ── DB: hidden, slides down when step 3 revealed ── */}
+          <AnimatePresence>
+            {isDbRevealed && (
+              <motion.div
+                initial={{ opacity: 0, y: -20, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: "auto" }}
+                exit={{ opacity: 0, y: -10, height: 0 }}
+                transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+                className="overflow-hidden"
               >
-                {activeInfo.badge}: {activeInfo.title}
-              </div>
-              <div className="text-xs sm:text-sm text-slate-200 font-sans line-clamp-1 max-w-xl">
-                {activeInfo.desc}
-              </div>
-            </div>
-          </div>
+                {/* Arrow from backend to DB */}
+                <div className="flex justify-center py-1">
+                  <div className="flex items-center gap-2 text-indigo-400">
+                    <ArrowDown className="w-4 h-4 animate-bounce" />
+                    <div className="rotate-180 mb-2">
+                      <ArrowDown className="w-4 h-4 animate-bounce" />
 
-          {/* Right: Controller Buttons */}
-          <div className="flex items-center gap-2 shrink-0 w-full sm:w-auto justify-end">
-            {/* BIG NEXT PART BUTTON */}
-            <button
-              type="button"
-              onClick={handleNextPart}
-              className={`px-5 py-3 rounded-xl font-mono text-xs sm:text-sm font-extrabold text-white transition-all duration-300 flex items-center gap-2.5 cursor-pointer active:scale-[0.98] ${
-                scenario === "login"
-                  ? "bg-gradient-to-r from-cyan-500 via-indigo-600 to-cyan-500 bg-[length:200%_auto] hover:bg-right shadow-[0_0_25px_rgba(6,182,212,0.5)] hover:shadow-[0_0_35px_rgba(6,182,212,0.7)]"
-                  : "bg-gradient-to-r from-emerald-500 via-cyan-600 to-emerald-500 bg-[length:200%_auto] hover:bg-right shadow-[0_0_25px_rgba(16,185,129,0.5)] hover:shadow-[0_0_35px_rgba(16,185,129,0.7)]"
-              }`}
-              title="Click or press Space to advance to the next part"
-            >
-              <span>{activeInfo.buttonLabel}</span>
-              {currentStep < 5 ? (
-                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-              ) : (
-                <RotateCcw className="w-4 h-4 stroke-[2.5]" />
-              )}
-            </button>
+                    </div>
+                  </div>
+                </div>
 
-            {/* Reset Button */}
-            <button
-              type="button"
-              onClick={handleReset}
-              className="p-2.5 rounded-xl bg-white/5 hover:bg-white/15 text-slate-400 hover:text-white border border-white/10 transition-all cursor-pointer"
-              title="Reset to Part 1"
-              aria-label="Reset"
-            >
-              <RotateCcw className="w-4 h-4" />
-            </button>
-          </div>
+                {/* DB card */}
+                <button
+                  type="button"
+                  onClick={() => (onOpenDatabase ? onOpenDatabase() : onNextSlide?.())}
+                  title="Open Database Slide (Slide 06)"
+                  className={`w-1/2 mx-auto flex items-center justify-between gap-4 px-5 py-4 rounded-2xl border-2 cursor-zoom-in transition-all duration-300 ${isDbActive
+                    ? "border-indigo-400 bg-indigo-950/60 shadow-[0_0_30px_rgba(99,102,241,0.6)] ring-2 ring-indigo-400/30"
+                    : "border-indigo-500/40 bg-[#0B1120]/90 hover:border-cyan-400 hover:shadow-[0_0_24px_rgba(6,182,212,0.4)]"
+                    }`}
+                >
+                  <div className="flex items-center gap-4">
+                    <Database className={`w-10 h-10 transition-all ${isDbActive ? "text-indigo-300 animate-pulse" : "text-indigo-400"}`} />
+                    <div className="text-left">
+                      <p className="text-sm font-mono font-bold text-white">DataBase</p>
+                      <p className="text-[11px] font-mono text-indigo-300 mt-0.5">devup_production_db</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    {isDbActive && (
+                      <span className="px-2 py-0.5 rounded-lg bg-indigo-500/30 text-indigo-200 text-[10px] font-mono font-bold uppercase tracking-wider border border-indigo-400/30">
+                        queried
+                      </span>
+                    )}
+                    <span className="text-[11px] font-mono text-slate-400 hover:text-cyan-300 transition-colors">
+                      Inspect ↗
+                    </span>
+                  </div>
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </section>
